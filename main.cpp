@@ -1,4 +1,4 @@
-#define GUI
+//#define GUI
 
 #ifdef GUI
 #include "front/mainwindow.h"
@@ -24,13 +24,17 @@ int main(int argc, char *argv[])
 
     return a.exec();
 #else
-    srand (time(NULL));
-    int Size = (3 + (rand() % 6));
-    kenken x(Size, ALL_OPERATIONS);
-    x.generate_game();
-    draw y;
-    y.print(x.get_game_grid_ptr());
-    x.delete_game();
+    std::cout << "Started\n";
+    srand (0);
+    for (int i = 0; i < 50; ++i) {
+        int Size = 3 + (i%7);
+        kenken x(Size, ALL_OPERATIONS);
+        x.generate_game();
+//        draw y;
+        std::cout << Size << ' ' << i << std::endl;
+//        y.print(x.get_game_grid_ptr());
+        x.delete_game();
+    }
 
     return 0;
 #endif
