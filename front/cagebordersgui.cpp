@@ -70,14 +70,9 @@ cell *CageBordersGUI::cells() const
 
 void CageBordersGUI::setCells(cell *cells)
 {
+    prepareGeometryChange();
     m_cells = cells;
 }
-
-void CageBordersGUI::cellChanged()
-{
-    prepareGeometryChange();
-}
-
 
 QRectF CageBordersGUI::boundingRect() const
 {

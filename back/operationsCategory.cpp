@@ -70,5 +70,8 @@ char operationsCategory::get_random_operation(int numberOfCells)
 
 void operationsCategory::delete_operationArray(void)
 {
-	delete(operationsArray);
+    if (operationsArray) {
+        delete[] operationsArray;
+        operationsArray = nullptr;
+    }
 }

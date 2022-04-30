@@ -13,6 +13,9 @@ private:
 	int firstCellInCage;  	//index of the first cell in this cage (used for printing the target value and the operation).
 
 public:
+    cage() {cageCells = nullptr;}
+    ~cage() {delete_cage_cells_Ptr();}
+
 	void set_number_of_cells(int n);
 
 	void set_target_value(int n);

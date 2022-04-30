@@ -3,6 +3,11 @@
 
 #include <QMainWindow>
 #include "framegui.h"
+#include "cagebordersgui.h"
+
+#include "../back/cell.h"
+#include "../back/kenken.h"
+#include "../back/draw.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +27,10 @@ private slots:
 private:
     Ui::MainWindow *ui;
     FrameGUI *m_frame;
+    CageBordersGUI *m_cageBorders;
+
+    kenken *m_game;
+    draw y;
 };
 
 #endif // MAINWINDOW_H

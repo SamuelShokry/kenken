@@ -11,6 +11,7 @@ private:
 
 public:
 	kenken(int gameSize, operation op);
+    ~kenken() {delete_game();}
 
 	grid* get_game_grid_ptr (void);
 

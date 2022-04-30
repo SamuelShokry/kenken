@@ -10,7 +10,7 @@ class operationsCategory
 private:
 	operation categoryName;	//Input name of operations category.
 	int operationsSize;		//Number of allowed operations.
-	char* operationsArray;	//Array of the allowed operations.
+    char* operationsArray = nullptr;	//Array of the allowed operations.
 
 public:
 	void set_category_name (operation name);
@@ -24,6 +24,8 @@ public:
 	char get_random_operation(int numberOfCells);
 
 	void delete_operationArray(void);
+
+    ~operationsCategory() {delete_operationArray();}
 };
 
 

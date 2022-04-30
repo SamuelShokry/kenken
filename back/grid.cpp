@@ -149,7 +149,12 @@ void grid::generate_grid(void)
 
 void grid::delete_grid(void)
 {
-	cages->delete_cage_cells_Ptr();
-	delete cages;
-	delete gridCells;
+    if (cages) {
+        delete[] cages;
+        cages = nullptr;
+    }
+    if (gridCells) {
+        delete[] gridCells;
+        gridCells = nullptr;
+    }
 }

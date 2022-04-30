@@ -18,8 +18,6 @@ public:
     cell *cells() const;
     void setCells(cell *cells);
 
-    void cellChanged();
-
 private:
     uint8_t m_penWidth;
     cell *m_cells;

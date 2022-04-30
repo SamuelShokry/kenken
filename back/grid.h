@@ -11,6 +11,8 @@ private:
 	cell* gridCells = NULL;		//The grid cells.
 
 public:
+    ~grid() { delete_grid(); }
+
 	void set_grid_size(int s);
 
 	int get_grid_size(void);
