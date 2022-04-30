@@ -7,27 +7,27 @@ void operationsCategory::set_category_name (operation name)
 	if(categoryName == PLUS)
 	{
 		operationsSize = 1;
-		operationsArray = new char[1];
+        operationsArray = new char[operationsSize];
 		operationsArray[0] = '+';
 	}
 	else if(categoryName == PLUS_MINUS)
 	{
 		operationsSize = 2;
-		operationsArray = new char;
+        operationsArray = new char[operationsSize];
 		operationsArray[0] = '+';
 		operationsArray[1] = '-';
 	}
 	else if(categoryName == TIMES_DIVIDED)
 	{
 		operationsSize = 2;
-		operationsArray = new char;
+        operationsArray = new char[operationsSize];
 		operationsArray[0] = '*';
 		operationsArray[1] = '/';
 	}
 	else if(categoryName == ALL_OPERATIONS)
 	{
 		operationsSize = 4;
-		operationsArray = new char;
+        operationsArray = new char[operationsSize];
 		operationsArray[0] = '+';
 		operationsArray[1] = '-';
 		operationsArray[2] = '*';
@@ -52,6 +52,7 @@ char* operationsCategory::get_operations_array(void)
 
 char operationsCategory::get_random_operation(int numberOfCells)
 {
+    assert(operationsSize > 0);
 	int op = rand() % operationsSize;
 	if(numberOfCells == 1)
 	{
