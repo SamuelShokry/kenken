@@ -1,9 +1,11 @@
+#define GUI
+
 #ifdef GUI
-#include "mainwindow.h"
+#include "front/mainwindow.h"
 #include <QApplication>
 #else
-#include "kenken.h"
-#include "draw.h"
+#include "back/kenken.h"
+#include "back/draw.h"
 #endif
 
 /*---------------- Operations Categories ------------------

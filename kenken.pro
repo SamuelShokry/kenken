@@ -11,28 +11,30 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = kenken
 TEMPLATE = app
 
+HEADERS += \
+    back/cage.h \
+    back/cell.h \
+    back/draw.h \
+    back/grid.h \
+    back/kenken.h \
+    back/operationsCategory.h \
+    front/cagebordersgui.h \
+    front/framegui.h \
+    front/mainwindow.h \
+    front/gridgui.h
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    cage.cpp \
-    cell.cpp \
-    draw.cpp \
-    grid.cpp \
-    kenken.cpp \
-    operationsCategory.cpp \
-    framegui.cpp \
-    cagebordersgui.cpp \
-    gridgui.cpp
+SOURCES += \
+    back/cage.cpp \
+    back/cell.cpp \
+    back/draw.cpp \
+    back/grid.cpp \
+    back/kenken.cpp \
+    back/operationsCategory.cpp \
+    front/cagebordersgui.cpp \
+    front/framegui.cpp \
+    front/gridgui.cpp \
+    front/mainwindow.cpp \
+    main.cpp
 
-HEADERS  += mainwindow.h \
-    cage.h \
-    cell.h \
-    draw.h \
-    grid.h \
-    kenken.h \
-    operationsCategory.h \
-    framegui.h \
-    cagebordersgui.h \
-    gridgui.h
-
-FORMS    += mainwindow.ui
+FORMS += \
+    front/mainwindow.ui
