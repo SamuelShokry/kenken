@@ -276,5 +276,6 @@ void draw::print(grid* x)
 	}
 
 	delete(printedUnsolvedArray);
+    std::cout << std::endl << std::flush;
 }
 

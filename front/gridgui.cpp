@@ -39,6 +39,11 @@ qreal GridGUI::length() const
     return qreal(gridSize()) * qreal(cellSize());
 }
 
+uint8_t GridGUI::index(uint8_t row, uint8_t col)
+{
+    return row * gridSize() + col;
+}
+
 
 QRectF GridGUI::boundingRect() const
 {

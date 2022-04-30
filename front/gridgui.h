@@ -16,6 +16,9 @@ public:
 
     qreal length() const;
 
+protected:
+    uint8_t index(uint8_t row, uint8_t col);
+
 private:
     uint8_t m_gridSize;
     uint8_t m_cellSize;
