@@ -18,10 +18,8 @@ operationsCategory* kenken::get_game_operation_ptr(void)
 
 void kenken::generate_game(void)
 {
-	/* starting the program with different seed. */
-	srand (time(NULL));
-	/* Generate a new grid to be used in the game. */
-	gameGrid.generate_grid();
+    /* Generate a new grid to be used in the game. */
+    gameGrid.generate_grid();
 
 	/* variables to get the grid data. */
 	int gameSize = gameGrid.get_grid_size();
@@ -126,8 +124,8 @@ void kenken::generate_game(void)
 		cagePtr[cageIndex].set_target_value(value);
 	}
 
-	delete(randomColArrIndex);
-	delete(randomRowArrValues);
+    delete[] randomColArrIndex;
+    delete[] randomRowArrValues;
 }
 
 void kenken::delete_game(void)
