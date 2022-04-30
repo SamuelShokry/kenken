@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     draw.cpp \
     grid.cpp \
     kenken.cpp \
-    operationsCategory.cpp
+    operationsCategory.cpp \
+    framegui.cpp
 
 HEADERS  += mainwindow.h \
     cage.h \
@@ -27,6 +28,7 @@ HEADERS  += mainwindow.h \
     draw.h \
     grid.h \
     kenken.h \
-    operationsCategory.h
+    operationsCategory.h \
+    framegui.h
 
 FORMS    += mainwindow.ui
