@@ -6,7 +6,7 @@ void cage::set_number_of_cells(int n)
 	numberOfCells = n;
 	cageCells = new cell*[numberOfCells];
     for (int i = 0; i < n; ++i) {
-        cageCells[i] = new cell;
+        cageCells[i] = nullptr;
     }
 }
 
@@ -94,8 +94,10 @@ bool cage::cheak_cage(void)
 void cage::delete_cage_cells_Ptr(void)
 {
     if (cageCells) {
-        for (int i = 0; i < numberOfCells; ++i)
-            delete cageCells[i];
+//        for (int i = 0; i < numberOfCells; ++i)
+//            if (cageCells[i])
+//                delete cageCells[i];
+//        std::cout << "deleting cageCells in delete_cage_cells_Ptr\n";
         delete[] cageCells;
         cageCells = nullptr;
     }
