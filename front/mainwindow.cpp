@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_gridSize(3),
+    m_gameGUI(new GameGUI(0, Q_NULLPTR, Q_NULLPTR)),
     m_game(new kenken(m_gridSize, ALL_OPERATIONS))
 {
     ui->setupUi(this);
@@ -14,22 +15,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->graphicsView->setScene(new QGraphicsScene());
 
-    m_frame = new FrameGUI(m_gridSize);
-    m_cageBorders = new CageBordersGUI(m_gridSize, m_game->get_game_grid_ptr()->get_cells_ptr());
-    m_targets = new TargetGUI(m_gridSize,
-                              m_game->get_game_grid_ptr()->get_cages_ptr(),
-                              m_game->get_game_grid_ptr()->get_cells_ptr());
-
-    ui->graphicsView->scene()->addItem(m_frame);
-    ui->graphicsView->scene()->addItem(m_cageBorders);
-    ui->graphicsView->scene()->addItem(m_targets);
+    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr());
+    ui->graphicsView->scene()->addItem(m_gameGUI);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete m_frame;
-    delete m_cageBorders;
+    delete m_gameGUI;
+    delete m_game;
 }
 
 void MainWindow::generateGame(uint8_t gridSize, operation op)
@@ -47,16 +41,9 @@ void MainWindow::generateGame(uint8_t gridSize, operation op)
 
     QtConcurrent::run(&y, &draw::print, m_game->get_game_grid_ptr());
 
-    m_frame->setGridSize(m_gridSize);
+    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr());
 
-    m_cageBorders->setGridSize(m_gridSize);
-    m_cageBorders->setCells(m_game->get_game_grid_ptr()->get_cells_ptr());
-
-    m_targets->setGridSize(m_gridSize);
-    m_targets->setCages(m_game->get_game_grid_ptr()->get_cages_ptr());
-    m_targets->setCells(m_game->get_game_grid_ptr()->get_cells_ptr());
-
-    ui->graphicsView->centerOn(m_frame->length()/2, m_frame->length()/2);
+    ui->graphicsView->centerOn(m_gameGUI->length()/2, m_gameGUI->length()/2);
 }
 
 void MainWindow::on_pushButton_clicked()

@@ -2,9 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "framegui.h"
-#include "cagebordersgui.h"
-#include "targetgui.h"
+//#include "framegui.h"
+//#include "cagebordersgui.h"
+//#include "targetgui.h"
+
+#include "gamegui.h"
 
 #include "../back/cell.h"
 #include "../back/kenken.h"
@@ -30,11 +32,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    FrameGUI *m_frame;
-    CageBordersGUI *m_cageBorders;
-    TargetGUI *m_targets;
 
     uint8_t m_gridSize;
+
+    GameGUI *m_gameGUI;
 
     kenken *m_game;
     draw y;
