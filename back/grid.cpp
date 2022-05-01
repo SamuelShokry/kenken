@@ -30,7 +30,14 @@ void grid::generate_grid(void)
 	/********************* Grid class initialization. *****************/
 	/* Initialize the number of cages to be a random value between
 	 * the size of the grid and 2 x size of the grid. */
-	numberOfCages = 2 * gridSize + (rand() % (gridSize));
+	if(gridSize<5)
+	{
+		numberOfCages = gridSize + (rand() % (gridSize));
+	}
+	else
+	{
+		numberOfCages = 2 * gridSize + (rand() % (gridSize));
+	}
 	cages = new cage[numberOfCages];
 	gridCells = new cell[gridSize*gridSize];
 
@@ -63,13 +70,6 @@ void grid::generate_grid(void)
 		}
 	}
 
-	for(int i=0; i<(gridSize * gridSize) / 3; i+=2)
-	{
-		int swapVar = tempArray[i];
-		tempArray[i] = tempArray[numberOfCages - i -1];
-		tempArray[numberOfCages - i -1] = swapVar;
-	}
-
 	//Distribute the remaining cells randomly through the cages.
 	while(remainingGridSize != 0)
 	{
@@ -87,11 +87,20 @@ void grid::generate_grid(void)
 				index = (index + 1) % numberOfCages;
 				break;
 			}
-		}while((tempArray[index] + cageCellsRandomSize) > 6);
+		}while((tempArray[index] + cageCellsRandomSize) > 4);
 
 		tempArray[index] += cageCellsRandomSize;
 		remainingGridSize -= cageCellsRandomSize;
 	}
+
+	for(int i=0; i<numberOfCages; i++)
+	{
+		int randIndex = rand() % numberOfCages;
+		int swapVar = tempArray[i];
+		tempArray[i] = tempArray[randIndex];
+		tempArray[randIndex] = swapVar;
+	}
+
 	//loop through all cages.
 	for(int i=0; i<numberOfCages; i++)
 	{

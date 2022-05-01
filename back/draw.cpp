@@ -84,7 +84,12 @@ void draw::print(grid* x)
 			if(check_target_value_position(x, row, col, printedUnsolvedArray, &target_value))
 			{
 				col++;
-				if(target_value > 9999)
+
+				if(target_value > 999999)
+				{col+=6;}
+				else if(target_value > 99999)
+				{col+=5;}
+				else if(target_value > 9999)
 				{col+=4;}
 				else if(target_value > 999)
 				{col+=3;}
@@ -132,9 +137,13 @@ void draw::print(grid* x)
 					std::cout << "|";
 					if(check_target_value_position(x, row, col+1, printedUnsolvedArray, &target_value))
 					{
-						col += 2;
+						col+=2;
 
-						if(target_value > 9999)
+						if(target_value > 999999)
+						{col+=6;}
+						else if(target_value > 99999)
+						{col+=5;}
+						else if(target_value > 9999)
 						{col+=4;}
 						else if(target_value > 999)
 						{col+=3;}
@@ -187,7 +196,13 @@ void draw::print(grid* x)
 			}
 			else if(check_target_value_position(x, row, col, printedSolvedArray, &target_value))
 			{
-				if(target_value > 9999)
+				col++;
+
+				if(target_value > 999999)
+				{col+=6;}
+				else if(target_value > 99999)
+				{col+=5;}
+				else if(target_value > 9999)
 				{col+=4;}
 				else if(target_value > 999)
 				{col+=3;}
@@ -195,7 +210,6 @@ void draw::print(grid* x)
 				{col += 2;}
 				else if(target_value > 9)
 				{col++;}
-				col++;
 			}
 			/* Last Column */
 			else if((col+1) == (x->get_grid_size() * COLUMN_MAXIMIZE))
@@ -236,7 +250,13 @@ void draw::print(grid* x)
 					std::cout << "|";
 					if(check_target_value_position(x, row, col+1, printedSolvedArray, &target_value))
 					{
-						if(target_value > 9999)
+						col+=2;
+
+						if(target_value > 999999)
+						{col+=6;}
+						else if(target_value > 99999)
+						{col+=5;}
+						else if(target_value > 9999)
 						{col+=4;}
 						else if(target_value > 999)
 						{col+=3;}
@@ -244,7 +264,6 @@ void draw::print(grid* x)
 						{col += 2;}
 						else if(target_value > 9)
 						{col++;}
-						col +=2;
 					}
 				}
 			}
@@ -276,6 +295,5 @@ void draw::print(grid* x)
 	}
 
 	delete(printedUnsolvedArray);
-    std::cout << std::endl << std::flush;
 }
 
