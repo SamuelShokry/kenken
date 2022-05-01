@@ -4,6 +4,12 @@ kenken::kenken(int gameSize, operation op)
 {
 	gameGrid.set_grid_size(gameSize);
 	gameOperation.set_category_name(op);
+    isSolved = false;
+}
+
+void kenken::set_is_solved(bool flag)
+{
+    isSolved = flag;
 }
 
 grid* kenken::get_game_grid_ptr (void)
@@ -14,6 +20,11 @@ grid* kenken::get_game_grid_ptr (void)
 operationsCategory* kenken::get_game_operation_ptr(void)
 {
 	return &gameOperation;
+}
+
+bool kenken::get_is_solved()
+{
+    return isSolved;
 }
 
 void kenken::generate_game(void)
