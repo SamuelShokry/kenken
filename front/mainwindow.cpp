@@ -6,24 +6,23 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_game(new kenken(3, ALL_OPERATIONS))
+    m_gridSize(3),
+    m_game(new kenken(m_gridSize, ALL_OPERATIONS))
 {
     ui->setupUi(this);
-    srand (time(NULL));
-
-    int m_gridSize = 3;
     m_game->generate_game();
-
-//    y.print(m_game.get_game_grid_ptr());
-    QtConcurrent::run(&y, &draw::print, m_game->get_game_grid_ptr());
 
     ui->graphicsView->setScene(new QGraphicsScene());
 
     m_frame = new FrameGUI(m_gridSize);
     m_cageBorders = new CageBordersGUI(m_gridSize, m_game->get_game_grid_ptr()->get_cells_ptr());
+    m_targets = new TargetGUI(m_gridSize,
+                              m_game->get_game_grid_ptr()->get_cages_ptr(),
+                              m_game->get_game_grid_ptr()->get_cells_ptr());
 
     ui->graphicsView->scene()->addItem(m_frame);
     ui->graphicsView->scene()->addItem(m_cageBorders);
+    ui->graphicsView->scene()->addItem(m_targets);
 }
 
 MainWindow::~MainWindow()
@@ -33,22 +32,34 @@ MainWindow::~MainWindow()
     delete m_cageBorders;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::generateGame(uint8_t gridSize, operation op)
 {
-//    ui->graphicsView->scene()->clear();
-    delete m_game;
+    if (m_game)
+        delete m_game;
 
-    int size = (3 + (rand() % 6));
-//    int size = 7;
-    m_game = new kenken(size, ALL_OPERATIONS);
+    if (gridSize)
+        m_gridSize = gridSize;
+    else
+        m_gridSize = 3 + rand()%7;
+
+    m_game = new kenken(m_gridSize, op);
     m_game->generate_game();
 
-//    QtConcurrent::run(&y, &draw::print, m_game->get_game_grid_ptr());
+    QtConcurrent::run(&y, &draw::print, m_game->get_game_grid_ptr());
 
-    m_frame->setGridSize(size);
-    m_cageBorders->setGridSize(size);
+    m_frame->setGridSize(m_gridSize);
+
+    m_cageBorders->setGridSize(m_gridSize);
     m_cageBorders->setCells(m_game->get_game_grid_ptr()->get_cells_ptr());
 
-//    ui->graphicsView->scene()->addItem(m_frame);
-//    ui->graphicsView->scene()->addItem(m_cageBorders);
+    m_targets->setGridSize(m_gridSize);
+    m_targets->setCages(m_game->get_game_grid_ptr()->get_cages_ptr());
+    m_targets->setCells(m_game->get_game_grid_ptr()->get_cells_ptr());
+
+    ui->graphicsView->centerOn(m_frame->length()/2, m_frame->length()/2);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    generateGame();
 }

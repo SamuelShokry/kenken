@@ -6,7 +6,7 @@
 class FrameGUI : public GridGUI
 {
 public:
-    FrameGUI(uint8_t gridSize = 3, QGraphicsItem *parent = Q_NULLPTR);
+    FrameGUI(uint8_t gridSize, QGraphicsItem *parent = Q_NULLPTR);
 
     // QGraphicsItem interface
 public:

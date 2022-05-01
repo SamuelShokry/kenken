@@ -293,7 +293,7 @@ void draw::print(grid* x)
 			rowValueIndex += ROW_MAXIMIZE;
 		}
 	}
-
+    std::cout << std::flush;    // to ensure that the entire game is printed
 	delete(printedUnsolvedArray);
 }
 

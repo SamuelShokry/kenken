@@ -7,7 +7,7 @@
 class CageBordersGUI : public GridGUI
 {
 public:
-    CageBordersGUI(uint8_t gridSize = 3, cell *cells = Q_NULLPTR,
+    CageBordersGUI(uint8_t gridSize, cell *cells = Q_NULLPTR,
                    QGraphicsItem *parent = Q_NULLPTR);
 
     // QGraphicsItem interface
