@@ -4,9 +4,10 @@ GameGUI::GameGUI(quint8 gridSize, grid *grid, QGraphicsItem *parent)
     : GridGUI(gridSize, parent),
       m_frame(new FrameGUI(0, this)),
       m_cageBorders(new CageBordersGUI(0, Q_NULLPTR, this)),
-      m_targets(new TargetGUI(0, Q_NULLPTR, Q_NULLPTR, this))
+      m_targets(new TargetGUI(0, Q_NULLPTR, Q_NULLPTR, this)),
+      m_soln(new GameSolnGUI(0, Q_NULLPTR, this))
 {
-    setGrid(gridSize, grid);
+    setGrid(gridSize, grid, false);
 }
 
 GameGUI::~GameGUI()
@@ -16,13 +17,15 @@ GameGUI::~GameGUI()
     delete m_targets;
 }
 
-void GameGUI::setGrid(quint8 size, grid *grid)
+void GameGUI::setGrid(quint8 size, grid *grid, bool isSolved)
 {
     setGridSize(size);
 
     m_frame->setGridSize(size);
     m_cageBorders->setGridSize(size);
     m_targets->setGridSize(size);
+
+    m_soln->setCells(0, nullptr);
 
     if (grid) {
         cage *cages = grid->get_cages_ptr();
@@ -32,6 +35,10 @@ void GameGUI::setGrid(quint8 size, grid *grid)
 
         m_targets->setCages(cages);
         m_targets->setCells(cells);
+
+        if (isSolved) {
+            m_soln->setCells(size, cells);
+        }
     }
 }
 

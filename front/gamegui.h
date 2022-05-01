@@ -5,6 +5,7 @@
 #include "framegui.h"
 #include "cagebordersgui.h"
 #include "targetgui.h"
+#include "gamesolngui.h"
 
 #include "../back/grid.h"
 
@@ -14,11 +15,12 @@ public:
     GameGUI(quint8 gridSize, grid *grid, QGraphicsItem *parent = Q_NULLPTR);
     ~GameGUI();
 
-    void setGrid(quint8 size, grid *grid);
+    void setGrid(quint8 size, grid *grid, bool isSolved);
 private:
     FrameGUI *m_frame;
     CageBordersGUI *m_cageBorders;
     TargetGUI *m_targets;
+    GameSolnGUI *m_soln;
 
     // QGraphicsItem interface
 public:

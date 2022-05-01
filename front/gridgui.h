@@ -9,7 +9,7 @@ public:
     GridGUI(uint8_t gridSize, QGraphicsItem *parent = Q_NULLPTR);
 
     uint8_t gridSize() const;
-    void setGridSize(const uint8_t gridSize);
+    virtual void setGridSize(const uint8_t gridSize);
 
     uint8_t cellSize() const;
     void setCellSize(const uint8_t cellSize);
@@ -21,7 +21,6 @@ public:
 protected:
     uint8_t index(uint8_t row, uint8_t col);
 
-private:
     uint8_t m_gridSize;
     uint8_t m_cellSize;
 

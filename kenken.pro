@@ -24,7 +24,8 @@ HEADERS += \
     front/gridgui.h \
     front/gameview.h \
     front/targetgui.h \
-    front/gamegui.h
+    front/gamegui.h \
+    front/gamesolngui.h
 
 SOURCES += \
     back/cage.cpp \
@@ -40,7 +41,8 @@ SOURCES += \
     main.cpp \
     front/gameview.cpp \
     front/targetgui.cpp \
-    front/gamegui.cpp
+    front/gamegui.cpp \
+    front/gamesolngui.cpp
 
 FORMS += \
     front/mainwindow.ui

@@ -12,10 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     m_game->generate_game();
+    m_game->set_is_solved(true);
 
     ui->graphicsView->setScene(new QGraphicsScene());
 
-    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr());
+    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr(), m_game->get_is_solved());
     ui->graphicsView->scene()->addItem(m_gameGUI);
 }
 
@@ -41,12 +42,19 @@ void MainWindow::generateGame(uint8_t gridSize, operation op)
 
     QtConcurrent::run(&y, &draw::print, m_game->get_game_grid_ptr());
 
-    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr());
+    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr(), m_game->get_is_solved());
 
-    ui->graphicsView->centerOn(m_gameGUI->length()/2, m_gameGUI->length()/2);
+    ui->graphicsView->scene()->setSceneRect(0, 0,
+                                            m_gameGUI->length(),
+                                            m_gameGUI->length());
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    generateGame();
+    generateGame(false);
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr(), true);
 }
