@@ -17,6 +17,8 @@ void CageBordersGUI::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
+    if (gridSize() == 0 || m_cells == Q_NULLPTR) return;
+
     QPen pen = painter->pen();
     pen.setColor(Qt::black);
     pen.setWidth(m_penWidth);
@@ -28,11 +30,8 @@ void CageBordersGUI::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->drawLine(0, length(), length(), length());   // bottom horizontal
     painter->drawLine(length(), 0, length(), length());   // right veritcal
 
-    if (m_cells == Q_NULLPTR) return;
-
     //Draw the inline borders
     QPointF iter(cellSize(), cellSize()), inX(cellSize(), 0), inY(0, cellSize());
-    QLine line;
     QVector<QLineF> lines;
 
     int cage, cageRight, cageBottom;

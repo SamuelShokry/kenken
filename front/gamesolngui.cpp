@@ -15,7 +15,7 @@ void GameSolnGUI::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    if (m_cells == Q_NULLPTR) return;
+    if (gridSize() == 0 || m_cells == Q_NULLPTR) return;
 
     quint8 cellIndex;
     QPointF iter(0, 0);

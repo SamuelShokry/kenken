@@ -15,7 +15,8 @@ public:
     GameGUI(quint8 gridSize, grid *grid, QGraphicsItem *parent = Q_NULLPTR);
     ~GameGUI();
 
-    void setGrid(quint8 size, grid *grid, bool isSolved);
+    void setGrid(quint8 size, grid *grid);
+    void drawSoln(quint8 size, cell *cells);
 private:
     FrameGUI *m_frame;
     CageBordersGUI *m_cageBorders;

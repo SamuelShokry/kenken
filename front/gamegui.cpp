@@ -7,7 +7,7 @@ GameGUI::GameGUI(quint8 gridSize, grid *grid, QGraphicsItem *parent)
       m_targets(new TargetGUI(0, Q_NULLPTR, Q_NULLPTR, this)),
       m_soln(new GameSolnGUI(0, Q_NULLPTR, this))
 {
-    setGrid(gridSize, grid, false);
+    setGrid(gridSize, grid);
 }
 
 GameGUI::~GameGUI()
@@ -17,7 +17,7 @@ GameGUI::~GameGUI()
     delete m_targets;
 }
 
-void GameGUI::setGrid(quint8 size, grid *grid, bool isSolved)
+void GameGUI::setGrid(quint8 size, grid *grid)
 {
     setGridSize(size);
 
@@ -35,11 +35,12 @@ void GameGUI::setGrid(quint8 size, grid *grid, bool isSolved)
 
         m_targets->setCages(cages);
         m_targets->setCells(cells);
-
-        if (isSolved) {
-            m_soln->setCells(size, cells);
-        }
     }
+}
+
+void GameGUI::drawSoln(quint8 size, cell *cells)
+{
+    m_soln->setCells(size, cells);
 }
 
 

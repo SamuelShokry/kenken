@@ -14,6 +14,8 @@ void FrameGUI::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
+    if (gridSize() == 0) return;
+
     painter->setPen(Qt::lightGray);
 
     const QPointF horStep(0, cellSize());
