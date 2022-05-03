@@ -17,12 +17,24 @@ grid* kenken::get_game_grid_ptr (void)
 	return &gameGrid;
 }
 
+//To be used for a const kenken
+const grid* kenken::get_game_grid_ptr (void) const
+{
+    return &gameGrid;
+}
+
 operationsCategory* kenken::get_game_operation_ptr(void)
 {
 	return &gameOperation;
 }
 
-bool kenken::get_is_solved()
+//To be used for a const kenken
+const operationsCategory* kenken::get_game_operation_ptr(void) const
+{
+    return &gameOperation;
+}
+
+bool kenken::get_is_solved() const
 {
     return isSolved;
 }

@@ -3,6 +3,8 @@
 
 #include "cell.h"
 
+class KenkenReader;
+
 class cage
 {
 private:
@@ -28,19 +30,23 @@ public:
 
 	void set_first_cell_in_cage(int index);
 
-	int get_number_of_cells(void);
+    int get_number_of_cells(void) const;
 
-	int get_target_value(void);
+    int get_target_value(void) const;
 
-	char get_operation(void);
+    char get_operation(void) const;
 
 	int get_cage_cell_value(int index);
 
-	int get_first_cell_in_cage(void);
+    int get_first_cell_in_cage(void) const;
+
+    cell **get_cage_cells_ptr(void) const;
 
 	bool cheak_cage(void);
 
 	void delete_cage_cells_Ptr(void);
+
+    friend class KenkenReader;
 
 };
 

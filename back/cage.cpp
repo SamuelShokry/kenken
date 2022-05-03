@@ -35,17 +35,17 @@ void cage::set_first_cell_in_cage(int index)
 	firstCellInCage = index;
 }
 
-int cage::get_number_of_cells(void)
+int cage::get_number_of_cells(void) const
 {
 	return numberOfCells;
 }
 
-int cage::get_target_value(void)
+int cage::get_target_value(void) const
 {
 	return targetValue;
 }
 
-char cage::get_operation(void)
+char cage::get_operation(void) const
 {
 	return operation;
 }
@@ -55,9 +55,14 @@ int cage::get_cage_cell_value(int index)
 	return cageCells[index]->get_cell_value();
 }
 
-int cage::get_first_cell_in_cage(void)
+int cage::get_first_cell_in_cage(void) const
 {
-	return firstCellInCage;
+    return firstCellInCage;
+}
+
+cell **cage::get_cage_cells_ptr() const
+{
+    return cageCells;
 }
 
 bool cage::cheak_cage(void)

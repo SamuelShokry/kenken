@@ -1,8 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "../back/kenkenwriter.h"
+#include "../back/kenkenreader.h"
+
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>
+#include <QFileDialog>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
             this, &MainWindow::solveGame);
 
     connect(this, &MainWindow::stateChanged, this, &MainWindow::fsm);
+
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::loadGame);
+    connect(ui->actionSave_as, &QAction::triggered, this, &MainWindow::saveGame);
 }
 
 MainWindow::~MainWindow()
@@ -60,16 +68,27 @@ void MainWindow::generateGame(uint8_t gridSize, operation op)
 
     m_game = new kenken(m_gridSize, op);
     m_game->generate_game();
+    setGeneratedGame();
+}
 
+void MainWindow::setGeneratedGame()
+{
+    m_gridSize = m_game->get_game_grid_ptr()->get_grid_size();
     QtConcurrent::run(&y, &draw::print, m_game->get_game_grid_ptr());
 
-    m_gameGUI->setGrid(m_gridSize, m_game->get_game_grid_ptr());
+    m_gameGUI->setGrid(m_gridSize,
+                       m_game->get_game_grid_ptr());
 
     ui->graphicsView->scene()->setSceneRect(0, 0,
                                             m_gameGUI->length(),
                                             m_gameGUI->length());
 
-    setState(UnsolvedGame);
+    if (m_game->get_is_solved()) {
+        handleSolvedGame();
+        setState(SolvedGame);
+    }
+    else
+        setState(UnsolvedGame);
 }
 
 void MainWindow::generateAction()
@@ -104,6 +123,57 @@ void MainWindow::handleSolvedGame()
     m_gameGUI->drawSoln(m_gridSize,
                         m_game->get_game_grid_ptr()->get_cells_ptr());
     setState(SolvedGame);
+}
+
+void MainWindow::saveGame()
+{
+    QString filename = QFileDialog::getSaveFileName(this,
+                                                    tr("Choose where to save"),
+                                                    QString(),
+                                                    tr("*") + extension);
+
+    if (!filename.isEmpty()) {
+        filename += extension;
+        KenkenWriter writer;
+        QString err;
+        err.fromStdString(writer.write(*m_game, filename.toStdString()));
+
+        if (!err.isEmpty()) {
+            QMessageBox::warning(this,
+                                 tr("Error"),
+                                 err);
+        } else {
+            ui->statusBar->showMessage("Game has been saved successfully");
+        }
+    }
+}
+
+void MainWindow::loadGame()
+{
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    tr("Choose a game to load"),
+                                                    QString(),
+                                                    tr("*") + extension);
+    if (!filename.isEmpty()) {
+        KenkenReader reader;
+        QString err;
+        kenken *game = new kenken(0, PLUS);
+        err.fromStdString(reader.read(*game, filename.toStdString()));
+
+        if (!err.isEmpty()) {
+            QMessageBox::warning(this,
+                                 tr("Error"),
+                                 err);
+        } else {
+            ui->statusBar->hide();
+            if (m_state != NoGame)
+                clearGame();
+            m_game = game;
+            setGeneratedGame();
+            ui->statusBar->showMessage("Game has been loaded successfully");
+            ui->statusBar->show();
+        }
+    }
 }
 
 void MainWindow::setSolveButtonsEnabled(const bool isEnabled)
@@ -157,6 +227,10 @@ void MainWindow::fsm()
     case NoGame:
         setSolveButtonsEnabled(false);
         setControlButtonsEnabled(true, false, false);
+
+        ui->actionSave_as->setEnabled(false);
+        ui->actionOpen->setEnabled(true);
+
         if (m_state != NoGame)
             ui->statusBar->showMessage(tr("Game has been cleared"));
         break;
@@ -164,6 +238,10 @@ void MainWindow::fsm()
     case UnsolvedGame:
         setSolveButtonsEnabled(true);
         setControlButtonsEnabled(true, true, false);
+
+        ui->actionSave_as->setEnabled(true);
+        ui->actionOpen->setEnabled(true);
+
         if (m_state == SolvedGame)
             ui->statusBar->showMessage(tr("Game solution has been erased"));
         else
@@ -173,12 +251,20 @@ void MainWindow::fsm()
     case BeingSolved:
         setSolveButtonsEnabled(false);
         setControlButtonsEnabled(false, false, false);
+
+        ui->actionOpen->setEnabled(false);
+        ui->actionSave_as->setEnabled(false);
+
         ui->statusBar->showMessage("Game is being solved. Please, wait.");
         break;
 
     case SolvedGame:
         setSolveButtonsEnabled(false);
         setControlButtonsEnabled(true, true, true);
+
+        ui->actionOpen->setEnabled(true);
+        ui->actionSave_as->setEnabled(true);
+
         ui->statusBar->showMessage(tr("Game has been solved in %1 millisecond")
                                    .arg(m_elapsed));
         break;

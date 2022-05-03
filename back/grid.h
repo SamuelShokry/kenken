@@ -3,6 +3,8 @@
 
 #include "cage.h"
 
+class KenkenReader;
+
 class grid{
 private:
 	int gridSize = 0;			//Grid size that will be determined by the user.
@@ -15,17 +17,19 @@ public:
 
 	void set_grid_size(int s);
 
-	int get_grid_size(void);
+    int get_grid_size(void) const;
 
-	int get_number_of_cages(void);
+    int get_number_of_cages(void) const;
 
-	cage* get_cages_ptr(void);
+    cage* get_cages_ptr(void) const;
 
-	cell* get_cells_ptr(void);
+    cell* get_cells_ptr(void) const;
 
 	void generate_grid(void);
 
 	void delete_grid(void);
+
+    friend class KenkenReader;
 };
 
 

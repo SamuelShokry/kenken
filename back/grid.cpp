@@ -5,22 +5,22 @@ void grid::set_grid_size(int s)
 	gridSize = s;
 }
 
-int grid::get_grid_size(void)
+int grid::get_grid_size(void) const
 {
 	return gridSize;
 }
 
-int grid::get_number_of_cages(void)
+int grid::get_number_of_cages(void) const
 {
 	return numberOfCages;
 }
 
-cage* grid::get_cages_ptr(void)
+cage* grid::get_cages_ptr(void) const
 {
 	return cages;
 }
 
-cell* grid::get_cells_ptr(void)
+cell* grid::get_cells_ptr(void) const
 {
 	return gridCells;
 }

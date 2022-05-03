@@ -3,6 +3,8 @@
 
 #include <bits/stdc++.h>
 
+class KenkenReader;
+
 class cell {
 private:
 	int value =0; 		//Default value to be zero (empty).
@@ -16,6 +18,8 @@ public:
 	int get_cell_value(void);
 
 	int get_cage_index(void);
+
+    friend class KenkenReader;
 };
 
 

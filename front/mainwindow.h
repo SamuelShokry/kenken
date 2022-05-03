@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTIme>
+#include <QElapsedTimer>
 
 //#include "framegui.h"
 //#include "cagebordersgui.h"
@@ -13,6 +13,8 @@
 #include "../back/cell.h"
 #include "../back/kenken.h"
 #include "../back/draw.h"
+
+const QString extension = ".kenken";
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +39,10 @@ private slots:
     void solveGame();
     void handleSolvedGame();
 
+    //Read & write
+    void saveGame();
+    void loadGame();
+
 private:
     Ui::MainWindow *ui;
     uint8_t m_gridSize;
@@ -44,11 +50,12 @@ private:
     kenken *m_game;
     draw y;
     State m_state, m_nextState;
-    QTime m_time;
+    QElapsedTimer m_time;
     int m_elapsed;
 
     //The function generates randomly a gridSize if it is zero
     void generateGame(uint8_t gridSize = 0, operation op = ALL_OPERATIONS);
+    void setGeneratedGame();
 
     void clearGame();
     void clearSoln();

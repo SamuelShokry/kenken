@@ -35,20 +35,25 @@ void operationsCategory::set_category_name (operation name)
 	}
 }
 
-operation operationsCategory::get_category_name(void)
+operation operationsCategory::get_category_name(void) const
 {
 	return categoryName;
 }
 
-int operationsCategory::get_operations_Size (void)
+int operationsCategory::get_operations_Size (void) const
 {
 	return operationsSize;
 }
 
-char* operationsCategory::get_operations_array(void)
+char* operationsCategory::get_operations_array(void) const
 {
 	return operationsArray;
 }
+
+//const char* operationsCategory::get_operations_array(void) const
+//{
+//    return operationsArray;
+//}
 
 char operationsCategory::get_random_operation(int numberOfCells)
 {

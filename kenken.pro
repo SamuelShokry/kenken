@@ -25,7 +25,9 @@ HEADERS += \
     front/gameview.h \
     front/targetgui.h \
     front/gamegui.h \
-    front/gamesolngui.h
+    front/gamesolngui.h \
+    back/kenkenwriter.h \
+    back/kenkenreader.h
 
 SOURCES += \
     back/cage.cpp \
@@ -42,7 +44,9 @@ SOURCES += \
     front/gameview.cpp \
     front/targetgui.cpp \
     front/gamegui.cpp \
-    front/gamesolngui.cpp
+    front/gamesolngui.cpp \
+    back/kenkenwriter.cpp \
+    back/kenkenreader.cpp
 
 FORMS += \
     front/mainwindow.ui

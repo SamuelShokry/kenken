@@ -3,6 +3,8 @@
 
 #include <bits/stdc++.h>
 
+class KenkenReader;
+
 enum operation{PLUS, PLUS_MINUS, TIMES_DIVIDED, ALL_OPERATIONS};
 
 class operationsCategory
@@ -15,17 +17,19 @@ private:
 public:
 	void set_category_name (operation name);
 
-	operation get_category_name(void);
+    operation get_category_name(void) const;
 
-	int get_operations_Size (void);
+    int get_operations_Size (void) const;
 
-	char* get_operations_array(void);
+    char* get_operations_array(void) const;
 
 	char get_random_operation(int numberOfCells);
 
 	void delete_operationArray(void);
 
     ~operationsCategory() {delete_operationArray();}
+
+    friend class KenkenReader;
 };
 
 
