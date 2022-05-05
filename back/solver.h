@@ -12,18 +12,13 @@ class solver
 private:
     solving_technique gameSolvingTechnique; //The desired solving technique.
     void* solverPtr = NULL;                 //Solver pointer to points to the desired solving technique.
-    bool isSolved;                          //Flag to indicates is the game is sloved or not.
 
 public:
     void set_game_solving_technique(solving_technique technique);
 
-    void set_is_solved(bool flag);
-
     solving_technique get_game_solving_technique();
 
     void* get_solver_ptr();
-
-    bool get_is_solved();
 
     void solve(grid* gridPtr);
 

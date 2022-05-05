@@ -25,14 +25,18 @@ int main(int argc, char *argv[])
     return a.exec();
 #else
     std::cout << "Started\n";
-    srand (0);
-    for (int i = 0; i < 50; ++i) {
-        int Size = 3 + (i%7);
+    srand (time(NULL));
+    int Size;
+    for(int i=0; i<100; i++)
+    {
+        std::cout << "i = " << i << std::endl;
+        Size = 3;
+        draw y;
         kenken x(Size, ALL_OPERATIONS);
         x.generate_game();
-//        draw y;
-        std::cout << Size << ' ' << i << std::endl;
-//        y.print(x.get_game_grid_ptr());
+        x.solve(BACKTRACKING);
+        y.print(x.get_game_grid_ptr());
+        x.clear_solution();     /* Used to clear the solution before using another technique. */
         x.delete_game();
     }
 

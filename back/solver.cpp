@@ -8,11 +8,6 @@ void solver::set_game_solving_technique(solving_technique technique)
     gameSolvingTechnique = technique;
 }
 
-void solver::set_is_solved(bool flag)
-{
-    isSolved = flag;
-}
-
 solving_technique solver::get_game_solving_technique()
 {
     return gameSolvingTechnique;
@@ -21,11 +16,6 @@ solving_technique solver::get_game_solving_technique()
 void* solver::get_solver_ptr()
 {
     return solverPtr;
-}
-
-bool solver::get_is_solved()
-{
-    return isSolved;
 }
 
 void solver::solve(grid* gridPtr)
@@ -45,8 +35,6 @@ void solver::solve(grid* gridPtr)
         solverPtr = new Backtracking(gridPtr);
         break;
     }
-
-    isSolved = true;
 }
 
 void solver::clear_solution(grid* gridPtr)
@@ -60,8 +48,6 @@ void solver::clear_solution(grid* gridPtr)
 
 void solver::delete_solver()
 {
-    isSolved = false;
-
     switch(gameSolvingTechnique)
     {
     case BACKTRACKING:
