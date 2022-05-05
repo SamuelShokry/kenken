@@ -3,6 +3,7 @@
 
 #include "grid.h"
 #include "operationsCategory.h"
+#include "solver.h"
 
 class KenkenReader;
 
@@ -10,7 +11,7 @@ class kenken{
 private:
 	grid gameGrid;						//Random generated grid to be used in the game
 	operationsCategory gameOperation;	//Classifying the operation used.
-    bool isSolved;                      //Flag to indicates is the game is sloved or not.
+    solver gameSolver;                      //Solver to solve the game by the desired solving technique.
 
 public:
 	kenken(int gameSize, operation op);
@@ -19,14 +20,14 @@ public:
     grid* get_game_grid_ptr (void);
     const grid* get_game_grid_ptr (void) const; //To be used for a const kenken
 
-    void set_is_solved(bool flag);
-
     operationsCategory* get_game_operation_ptr(void);
     const operationsCategory* get_game_operation_ptr(void) const; //To be used for a const kenken
 
-    bool get_is_solved() const;
-
 	void generate_game(void);
+
+    void solve(solving_technique technique);
+
+    void clear_solution();
 
 	void delete_game(void);
 

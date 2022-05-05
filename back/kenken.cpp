@@ -4,12 +4,6 @@ kenken::kenken(int gameSize, operation op)
 {
 	gameGrid.set_grid_size(gameSize);
 	gameOperation.set_category_name(op);
-    isSolved = false;
-}
-
-void kenken::set_is_solved(bool flag)
-{
-    isSolved = flag;
 }
 
 grid* kenken::get_game_grid_ptr (void)
@@ -34,10 +28,6 @@ const operationsCategory* kenken::get_game_operation_ptr(void) const
     return &gameOperation;
 }
 
-bool kenken::get_is_solved() const
-{
-    return isSolved;
-}
 
 void kenken::generate_game(void)
 {
@@ -147,12 +137,34 @@ void kenken::generate_game(void)
 		cagePtr[cageIndex].set_target_value(value);
 	}
 
+    for(int i=0; i<gameSize; i++)
+    {
+        for(int j=0; j<gameSize; j++)
+        {
+        	Arr[(i * gameSize) + j] = cellPtr[(i * gameSize) + j].get_cell_value();
+            cellPtr[(i * gameSize) + j].set_cell_value(0);
+        }
+    }
+
     delete[] randomColArrIndex;
     delete[] randomRowArrValues;
+}
+
+void kenken::solve(solving_technique technique)
+{
+    gameSolver.set_game_solving_technique(technique);
+    gameSolver.solve(&gameGrid);
+}
+
+void kenken::clear_solution()
+{
+	gameSolver.clear_solution(&gameGrid);
+    gameSolver.delete_solver();
 }
 
 void kenken::delete_game(void)
 {
 	gameGrid.delete_grid();
 	gameOperation.delete_operationArray();
+    gameSolver.delete_solver();
 }

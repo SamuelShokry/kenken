@@ -67,33 +67,109 @@ cell **cage::get_cage_cells_ptr() const
 
 bool cage::cheak_cage(void)
 {
-	int temp = 0;
-	for(int i=0; i<numberOfCells; i++)
+	int temp;
+	int filledCells = 0;
+
+	if(operation == '+')
 	{
-		switch(operation)
+		temp = 0;
+
+		for(int i=0; i<numberOfCells; i++)
 		{
-			case '+':
-				temp += cageCells[i]->get_cell_value();
-				break;
-			case '-':
-				temp -= cageCells[i]->get_cell_value();
-				break;
-			case '*':
-				temp *= cageCells[i]->get_cell_value();
-				break;
-			case '/':
-				if(cageCells[i]->get_cell_value() != 0)
-				{
-					temp /= cageCells[i]->get_cell_value();;
-				}
-				break;
+			int value = cageCells[i]->get_cell_value();
+
+			if(value == 0)
+			{
+				continue;
+			}
+			temp += value;
+			filledCells ++;
+		}
+
+		if(filledCells == numberOfCells)
+		{
+			if(temp != targetValue)
+				return false;
+		}
+		else
+		{
+			if(temp >= targetValue)
+			{
+				return false;
+			}
+		}
+	}
+	else if(operation == '*')
+	{
+		temp = 1;
+
+		for(int i=0; i<numberOfCells; i++)
+		{
+			int value = cageCells[i]->get_cell_value();
+
+			if(value == 0)
+			{
+				continue;
+			}
+			temp *= value;
+			filledCells ++;
+		}
+
+		if(filledCells == numberOfCells)
+		{
+			if(temp != targetValue)
+				return false;
+		}
+		else
+		{
+			if(temp > targetValue)
+			{
+				return false;
+			}
+		}
+	}
+	else if(operation == '-')
+	{
+		int value1 = cageCells[0]->get_cell_value();
+		int value2 = cageCells[1]->get_cell_value();
+
+		if(value1 != 0 && value2 != 0)
+		{
+			if(abs(value1 - value2) != targetValue)
+			{
+				return false;
+			}
+		}
+	}
+	else if(operation == '/')
+	{
+		int value1 = cageCells[0]->get_cell_value();
+		int value2 = cageCells[1]->get_cell_value();
+
+		if(value1 != 0 && value2 != 0)
+		{
+			int division = std::max(value1, value2) / std::min(value1, value2);
+			int reminder =  std::max(value1, value2) % std::min(value1, value2);
+
+			if(division == targetValue && reminder == 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		if(targetValue != cageCells[0]->get_cell_value())
+		{
+			return false;
 		}
 	}
 
-	if(temp == targetValue)
-		return true;
-	else
-		return false;
+	return true;
 }
 
 void cage::delete_cage_cells_Ptr(void)

@@ -42,7 +42,7 @@ void grid::generate_grid(void)
 	gridCells = new cell[gridSize*gridSize];
 
 	//Array to hold the size of each cage.
-	int tempArray[gridSize*gridSize]; /* = new int[numberOfCages] */;
+    int* tempArray = new int[numberOfCages];
 	//Variable to hold the remaining number of unused cells.
 	//At the beginning each cage has one cell.
 	int remainingGridSize = (gridSize * gridSize);
@@ -75,7 +75,14 @@ void grid::generate_grid(void)
 	{
 		int index;
 		//generate the random cage cells number.
-		cageCellsRandomSize = 1 + (rand() % std::min(remainingGridSize, 5));
+		if(gridSize <7)
+		{
+			cageCellsRandomSize = 1 + (rand() % 2);
+		}
+		else
+		{
+			cageCellsRandomSize = 1 + (rand() % 1);
+		}
 
 		infinite = 0;
 		do
@@ -153,7 +160,7 @@ void grid::generate_grid(void)
 		}
 	}
 
-	//delete tempArray;
+    delete[] tempArray;
 }
 
 void grid::delete_grid(void)
