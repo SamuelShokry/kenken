@@ -23,6 +23,14 @@ bool Backtracking::check_constraints(int cellIndex)
     int row = cellIndex / gridSize;
     int col = cellIndex % gridSize;
 
+    cell * const cellsPtr = variables->get_cells_ptr();
+    const int currentCellValue = cellsPtr[cellIndex].get_cell_value();
+
+    //CheckCages
+    int cageNum = cellsPtr[cellIndex].get_cage_index();
+    if(!(variables->get_cages_ptr()[cageNum].cheak_cage()))
+        return false;
+
     //Row_Checking
     int desiredCell = (row * gridSize); // first cell in the current row;
     for(int i=0; i<gridSize; i++)
@@ -32,7 +40,7 @@ bool Backtracking::check_constraints(int cellIndex)
         	desiredCell += 1;
             continue;
         }
-        if(variables->get_cells_ptr()[cellIndex].get_cell_value() == variables->get_cells_ptr()[desiredCell].get_cell_value())
+        if(currentCellValue == cellsPtr[desiredCell].get_cell_value())
         {
             return false;
         }
@@ -48,17 +56,12 @@ bool Backtracking::check_constraints(int cellIndex)
             desiredCell += gridSize;
             continue;
         }
-        if(variables->get_cells_ptr()[cellIndex].get_cell_value() == variables->get_cells_ptr()[desiredCell].get_cell_value())
+        if(currentCellValue == cellsPtr[desiredCell].get_cell_value())
         {
             return false;
         }
         desiredCell += gridSize;
     }
-
-    //CheckCages
-    int cageNum = variables->get_cells_ptr()[cellIndex].get_cage_index();
-    if(!(variables->get_cages_ptr()[cageNum].cheak_cage()))
-        return false;
 
     return true;
 }
@@ -73,9 +76,10 @@ bool Backtracking::solve(int index)
     //X select a variable not in A (X is the current cell).
     //D select an ordering on the domain of X (domain is the grid size).
 
+    cell *cellsPtr = variables->get_cells_ptr();
     for(int i=1; i<= domain; i++)
     {
-        variables->get_cells_ptr()[index].set_cell_value(i);
+        cellsPtr[index].set_cell_value(i);
         bool result = this->check_constraints(index);
 
         if(result == true)
@@ -87,6 +91,6 @@ bool Backtracking::solve(int index)
             }
         }
     }
-    variables->get_cells_ptr()[index].set_cell_value(0);
+    cellsPtr[index].set_cell_value(0);
     return false;
 }
