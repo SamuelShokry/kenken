@@ -14,7 +14,7 @@ public:
     void readKenken(kenken &game);
     void readGrid(grid &g);
     void readOperationsCategory(operationsCategory &op);
-    void readCage(cage &c);
+    void readCage(cage &c, cell * const gridCells);
 
     void readArray(char *data, const size_t size);
 

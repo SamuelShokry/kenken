@@ -23,8 +23,10 @@ void solver::solve(grid* gridPtr)
     switch(gameSolvingTechnique)
     {
     case BACKTRACKING:
-        solverPtr = new Backtracking(gridPtr);
-        static_cast<Backtracking*>(solverPtr)->solve(0);
+        {
+          solverPtr = new Backtracking(gridPtr);
+          static_cast<Backtracking*>(solverPtr)->solve(0);
+        }
         break;
 
     case BACKTRACKING_WITH_FORWARD_CHECKING:
@@ -43,11 +45,13 @@ void solver::clear_solution(grid* gridPtr)
 	for(int i=0; i<(gridSize*gridSize); i++)
 	{
 		gridPtr->get_cells_ptr()[i].set_cell_value(0);
-	}
+    }
 }
 
 void solver::delete_solver()
 {
+    if (solverPtr == nullptr)
+        return;
     switch(gameSolvingTechnique)
     {
     case BACKTRACKING:
@@ -62,4 +66,5 @@ void solver::delete_solver()
         delete((BacktrackingFCHAC*) solverPtr);
         break;
     }
+    solverPtr = nullptr;
 }

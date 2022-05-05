@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFutureWatcher>
 #include <QElapsedTimer>
 
 //#include "framegui.h"
@@ -52,6 +53,7 @@ private:
     State m_state, m_nextState;
     QElapsedTimer m_time;
     int m_elapsed;
+    QFutureWatcher<void> m_watcher;
 
     //The function generates randomly a gridSize if it is zero
     void generateGame(uint8_t gridSize = 0, operation op = ALL_OPERATIONS);

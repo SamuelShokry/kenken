@@ -48,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::loadGame);
     connect(ui->actionSave_as, &QAction::triggered, this, &MainWindow::saveGame);
+
+    connect(&m_watcher, &QFutureWatcher<void>::finished,
+            this, &MainWindow::handleSolvedGame);
 }
 
 MainWindow::~MainWindow()
@@ -103,18 +106,16 @@ void MainWindow::solveGame()
 {
     setState(BeingSolved);
 
-    //TODO: call the actual solving function
     if (sender() == ui->backtrackingPB) {
         m_time.start();
-        QThread::sleep(1);
+        m_watcher.setFuture(QtConcurrent::run(m_game, &kenken::solve, BACKTRACKING));
     } else if (sender() == ui->forwardPB) {
         m_time.start();
-        QThread::sleep(2);
+        QThread::sleep(2);  //TODO: call the actual solving function
     } else if (sender() == ui->arcPB) {
         m_time.start();
-        QThread::sleep(3);
+        QThread::sleep(3);  //TODO: call the actual solving function
     }
-    handleSolvedGame();
 }
 
 void MainWindow::handleSolvedGame()
@@ -205,8 +206,7 @@ void MainWindow::clearGame()
 
 void MainWindow::clearSoln()
 {
-    //TODO: clear the actual data
-
+    m_game->clear_solution();
     m_gameGUI->drawSoln(0, Q_NULLPTR);
     setState(UnsolvedGame);
 }

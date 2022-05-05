@@ -45,11 +45,11 @@ void KenkenWriter::writeGrid(const grid &g)
                sizeof(cell)*g.get_grid_size()*g.get_grid_size());
 
     for (int i = 0; i < g.get_number_of_cages(); ++i) {
-        writeCage(g.get_cages_ptr()[i]);
+        writeCage(g.get_cages_ptr()[i], g.get_cells_ptr());
     }
 }
 
-void KenkenWriter::writeCage(const cage &c)
+void KenkenWriter::writeCage(const cage &c, const cell * const gridCells)
 {
     writeScalar(c.get_target_value());
     writeScalar(c.get_operation());
@@ -58,7 +58,8 @@ void KenkenWriter::writeCage(const cage &c)
 
     cell **cells = c.get_cage_cells_ptr();
     for (int i = 0; i < c.get_number_of_cells(); ++i) {
-        writeScalar(*(cells[i]));
+        int offset = cells[i] - gridCells;
+        writeScalar(offset);
     }
 }
 

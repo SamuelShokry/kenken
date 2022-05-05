@@ -48,11 +48,11 @@ void KenkenReader::readGrid(grid &g)
 
     g.cages = new cage[g.numberOfCages];
     for (int i = 0; i < g.numberOfCages; ++i) {
-        readCage(g.cages[i]);
+        readCage(g.cages[i], g.gridCells);
     }
 }
 
-void KenkenReader::readCage(cage &c)
+void KenkenReader::readCage(cage &c, cell * gridCells)
 {
     readScalar(c.targetValue);
     readScalar(c.operation);
@@ -63,8 +63,10 @@ void KenkenReader::readCage(cage &c)
 
     c.cageCells = new cell*[c.numberOfCells];
     for (int i = 0; i < c.get_number_of_cells(); ++i) {
-        c.cageCells[i] = new cell;
-        readScalar(*(c.cageCells[i]));
+        c.cageCells[i] = gridCells;
+        int offset;
+        readScalar(offset);
+        c.cageCells[i] += offset;
     }
 }
 

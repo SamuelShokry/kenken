@@ -14,7 +14,7 @@ public:
     void writeKenken(const kenken &game);
     void writeGrid(const grid &g);
     void writeOperationsCategory(const operationsCategory &op);
-    void writeCage(const cage &c);
+    void writeCage(const cage &c, const cell * const cells);
 
     void writeArray(const char *data, const size_t size);
 

@@ -75,14 +75,7 @@ void grid::generate_grid(void)
 	{
 		int index;
 		//generate the random cage cells number.
-		if(gridSize <7)
-		{
-			cageCellsRandomSize = 1 + (rand() % 2);
-		}
-		else
-		{
-			cageCellsRandomSize = 1 + (rand() % 1);
-		}
+        cageCellsRandomSize = 1 + (rand() % std::min(remainingGridSize, 5));
 
 		infinite = 0;
 		do

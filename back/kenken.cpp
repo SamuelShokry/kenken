@@ -160,6 +160,7 @@ void kenken::generate_game(void)
             cellPtr[(i * gameSize) + j].set_cell_value(0);
         }
     }
+    isSolved = false;
 
     delete[] randomColArrIndex;
     delete[] randomRowArrValues;
