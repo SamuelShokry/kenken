@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
         y.print(x.get_game_grid_ptr());
         x.clear_solution();     /* Used to clear the solution before using another technique. */
         x.delete_game();
+        std::cout << std::endl;
     }
 
     return 0;

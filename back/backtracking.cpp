@@ -77,10 +77,12 @@ bool Backtracking::solve(int index)
     //D select an ordering on the domain of X (domain is the grid size).
 
     cell *cellsPtr = variables->get_cells_ptr();
+    int cellIndex = variables->get_optimization_cell_array_ptr()[index];
+
     for(int i=1; i<= domain; i++)
     {
-        cellsPtr[index].set_cell_value(i);
-        bool result = this->check_constraints(index);
+        cellsPtr[cellIndex].set_cell_value(i);
+        bool result = this->check_constraints(cellIndex);
 
         if(result == true)
         {
@@ -91,6 +93,6 @@ bool Backtracking::solve(int index)
             }
         }
     }
-    cellsPtr[index].set_cell_value(0);
+    cellsPtr[cellIndex].set_cell_value(0);
     return false;
 }
