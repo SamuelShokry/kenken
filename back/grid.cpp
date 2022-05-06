@@ -39,9 +39,13 @@ void grid::generate_grid(void)
     {
         numberOfCages = gridSize + (rand() % (gridSize));
     }
+    else if(gridSize < 8)
+    {
+        numberOfCages = 3 * gridSize + (rand() % (gridSize));
+    }
     else
     {
-        numberOfCages = 2 * gridSize + (rand() % (gridSize));
+        numberOfCages = 4 * gridSize + (rand() % (gridSize));
     }
     cages = new cage[numberOfCages];
     gridCells = new cell[gridSize*gridSize];

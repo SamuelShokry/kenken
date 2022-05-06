@@ -46,6 +46,10 @@ void KenkenReader::readGrid(grid &g)
     readArray((char*) g.gridCells,
               sizeof(cell)*g.gridSize*g.gridSize);
 
+    g.OptimizationCellArray = new int[g.gridSize*g.gridSize];
+    readArray((char*) g.OptimizationCellArray,
+              sizeof(int)*g.gridSize*g.gridSize);
+
     g.cages = new cage[g.numberOfCages];
     for (int i = 0; i < g.numberOfCages; ++i) {
         readCage(g.cages[i], g.gridCells);

@@ -44,6 +44,9 @@ void KenkenWriter::writeGrid(const grid &g)
     writeArray((const char*)g.get_cells_ptr(),
                sizeof(cell)*g.get_grid_size()*g.get_grid_size());
 
+    writeArray((const char*)g.get_optimization_cell_array_ptr(),
+               sizeof(int)*g.get_grid_size()*g.get_grid_size());
+
     for (int i = 0; i < g.get_number_of_cages(); ++i) {
         writeCage(g.get_cages_ptr()[i], g.get_cells_ptr());
     }
