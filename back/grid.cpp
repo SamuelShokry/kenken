@@ -35,15 +35,19 @@ void grid::generate_grid(void)
     /********************* Grid class initialization. *****************/
     /* Initialize the number of cages to be a random value between
      * the size of the grid and 2 x size of the grid. */
-    if(gridSize<5)
+    if(gridSize<5)  // [1-2]*gridSize
     {
         numberOfCages = gridSize + (rand() % (gridSize));
     }
-    else if(gridSize < 8)
+    else if (gridSize < 7) //[2-3]*gridSize
+    {
+        numberOfCages = 2 * gridSize + (rand() % (gridSize));
+    }
+    else if (gridSize < 8) //[3-4]*gridSize
     {
         numberOfCages = 3 * gridSize + (rand() % (gridSize));
     }
-    else
+    else    //[4-5]*gridSize
     {
         numberOfCages = 4 * gridSize + (rand() % (gridSize));
     }
@@ -80,11 +84,13 @@ void grid::generate_grid(void)
             tempArray[i] = 1;
             remainingGridSize -= 1;
         }
+        assert(remainingGridSize > -1);
     }
 
     //Distribute the remaining cells randomly through the cages.
     while(remainingGridSize != 0)
     {
+        assert(remainingGridSize > -1);
         int index;
         //generate the random cage cells number.
         cageCellsRandomSize = 1 + (rand() % std::min(remainingGridSize, 5));
