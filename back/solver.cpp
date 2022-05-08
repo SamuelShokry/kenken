@@ -30,7 +30,8 @@ void solver::solve(grid* gridPtr)
         break;
 
     case BACKTRACKING_WITH_FORWARD_CHECKING:
-        solverPtr = new Backtracking(gridPtr);
+        solverPtr = new BacktrackingFCH(gridPtr);
+        static_cast<BacktrackingFCH*>(solverPtr)->solve(0);
         break;
 
     case BACKTRACKING_WITH_FORWARDCHECKING_AND_ARC_CONSISTENCY:
@@ -59,6 +60,7 @@ void solver::delete_solver()
         break;
 
     case BACKTRACKING_WITH_FORWARD_CHECKING:
+        static_cast<BacktrackingFCH*>(solverPtr)->delete_BacktrackingFCH();
         delete((BacktrackingFCH*) solverPtr);
         break;
 

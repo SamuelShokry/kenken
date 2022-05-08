@@ -184,5 +184,8 @@ void kenken::delete_game(void)
 {
 	gameGrid.delete_grid();
 	gameOperation.delete_operationArray();
-    gameSolver.delete_solver();
+    if(gameSolver.get_solver_ptr())
+    {
+        gameSolver.delete_solver();
+    }
 }

@@ -11,7 +11,7 @@ class solver
 {
 private:
     solving_technique gameSolvingTechnique; //The desired solving technique.
-    void* solverPtr = NULL;                 //Solver pointer to points to the desired solving technique.
+    void* solverPtr = nullptr;                 //Solver pointer to points to the desired solving technique.
 
 public:
     void set_game_solving_technique(solving_technique technique);
