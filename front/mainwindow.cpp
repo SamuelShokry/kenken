@@ -111,7 +111,7 @@ void MainWindow::solveGame()
         m_watcher.setFuture(QtConcurrent::run(m_game, &kenken::solve, BACKTRACKING));
     } else if (sender() == ui->forwardPB) {
         m_time.start();
-        QThread::sleep(2);  //TODO: call the actual solving function
+        m_watcher.setFuture(QtConcurrent::run(m_game, &kenken::solve, BACKTRACKING_WITH_FORWARD_CHECKING));
     } else if (sender() == ui->arcPB) {
         m_time.start();
         QThread::sleep(3);  //TODO: call the actual solving function

@@ -9,7 +9,7 @@ class BacktrackingFCH
     grid* variables = nullptr;                  //Is a set of variables, {X1, …, Xn}.
     bool* domain = nullptr;                     /* Is a set of domains, {D1, …, Dn}, one for each variable.
                                                    Implemented as a number of the grid size to loop through it.*/
-    int* numberOfDomainsPerVariable = nullptr;
+//    int* numberOfDomainsPerVariable = nullptr;
 
 public:
     BacktrackingFCH(grid* gridPtr);
