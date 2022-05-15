@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,7 +31,9 @@ HEADERS += \
     front/gamegui.h \
     front/gamesolngui.h \
     back/kenkenwriter.h \
-    back/kenkenreader.h
+    back/kenkenreader.h \
+    back/gamesarray.h \
+    back/comparator.h
 
 SOURCES += \
     back/backtracking.cpp \
@@ -54,7 +56,9 @@ SOURCES += \
     front/gamegui.cpp \
     front/gamesolngui.cpp \
     back/kenkenwriter.cpp \
-    back/kenkenreader.cpp
+    back/kenkenreader.cpp \
+    back/gamesarray.cpp \
+    back/comparator.cpp
 
 FORMS += \
     front/mainwindow.ui

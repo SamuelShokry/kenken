@@ -22,14 +22,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //For spinbox main game
     ui->operationTypeComboBox->addItem("PLUS");
     ui->operationTypeComboBox->addItem("PLUS_MINUS");
     ui->operationTypeComboBox->addItem("TIMES_DIVIDED");
     ui->operationTypeComboBox->addItem("ALL_OPERATIONS");
 
+    //For spinbox compare
+    ui->typeCompare->addItem("PLUS");
+    ui->typeCompare->addItem("PLUS_MINUS");
+    ui->typeCompare->addItem("TIMES_DIVIDED");
+    ui->typeCompare->addItem("ALL_OPERATIONS");
+
+    //For line edit compare
+    QIntValidator *validator = new QIntValidator;
+    validator->setBottom(1);
+    ui->compareCount->setValidator(validator);
+
     ui->graphicsView->setScene(new QGraphicsScene());
     ui->graphicsView->scene()->addItem(m_gameGUI);
 
+    // Generating the main game
     connect(ui->generatePB, &QPushButton::clicked,
             this, &MainWindow::generateAction);
     connect(ui->clearGamePB, &QPushButton::clicked,
@@ -37,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->clearSolnPB, &QPushButton::clicked,
             this, &MainWindow::clearSoln);
 
+    // Solving the main game
     connect(ui->backtrackingPB, &QPushButton::clicked,
             this, &MainWindow::solveGame);
     connect(ui->forwardPB, &QPushButton::clicked,
@@ -44,13 +58,38 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->arcPB, &QPushButton::clicked,
             this, &MainWindow::solveGame);
 
+    // Comparision buttons
+    connect(ui->comparePB, &QPushButton::clicked,
+            this, &MainWindow::compareAlgo);
+    connect(ui->pausePB, &QPushButton::clicked,
+            this, &MainWindow::handlePaused);
+    connect(ui->resumePB, &QPushButton::clicked,
+            this, &MainWindow::handleResumed);
+    connect(ui->cancelPB, &QPushButton::clicked,
+            this, &MainWindow::handleCancelled);
+
     connect(this, &MainWindow::stateChanged, this, &MainWindow::fsm);
+    connect(this, &MainWindow::stateCompareChanged, this, &MainWindow::fsmCompare);
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::loadGame);
     connect(ui->actionSave_as, &QAction::triggered, this, &MainWindow::saveGame);
 
     connect(&m_watcher, &QFutureWatcher<void>::finished,
             this, &MainWindow::handleSolvedGame);
+
+    connect(&m_watchCompare, &QFutureWatcher<void>::finished,
+            this, &MainWindow::handleCompareAlgo);
+    connect(&m_watchCompare, &QFutureWatcher<void>::progressValueChanged,
+            this, &MainWindow::handleProgressed);
+    connect(&m_watchCompare, &QFutureWatcher<void>::progressValueChanged,
+            ui->progressBar, &QProgressBar::setValue);
+    connect(&m_watchCompare, &QFutureWatcher<void>::progressRangeChanged,
+            ui->progressBar, &QProgressBar::setRange);
+
+    ui->tabWidget->setTabText(0, "Main Game");
+    ui->tabWidget->setTabText(1, "Compare Algorithms");
+
+    handleNoCompare();
 }
 
 MainWindow::~MainWindow()
@@ -177,6 +216,103 @@ void MainWindow::loadGame()
     }
 }
 
+void MainWindow::compareAlgo()
+{
+    //count check
+    int count = ui->compareCount->text().toInt();
+    if (count < 1) {
+        QMessageBox::warning(this, "Error", "Please insert a positive number in the games count field");
+        return;
+    }
+
+    //algorithms chosen check
+    Modes modes;
+    modes[0] = ui->B_checkBox->isChecked();
+    modes[1] = ui->BFC_checkBox->isChecked();
+    modes[2] = ui->BFCAC_checkBox->isChecked();
+
+    if ((modes[0] + modes[1] + modes[2]) == 0) {
+        QMessageBox::warning(this, "Error", "Please choose AT LEAST 1 algorithm to run iteratively");
+        return;
+    }
+
+    setCompareState(BeingCompared);
+    int size = ui->compareSize->value();
+    operation op = static_cast<operation>(ui->typeCompare->currentIndex());
+
+    m_comparator.setCount(count);
+    m_comparator.setSize(size);
+    m_comparator.setOp(op);
+    m_comparator.setModes(modes);
+    m_comparator.compare(m_watchCompare);
+    ui->transcript->setPlainText("Comparision is being executed, please wait!");
+}
+
+void MainWindow::handleCompareAlgo()
+{
+    setCompareState(NoCompare);
+    if (m_watchCompare.isCanceled())
+        return;
+
+    QString msg = "\n";
+    msg += "\n*************************************";
+    msg += "\n*************************************";
+    msg += "\n**********Comparision is DONE!!*********";
+    msg += "\n*************************************";
+    msg += "\n*************************************";
+    msg += "\n\n";
+    ui->transcript->appendPlainText(msg);
+
+
+    double results[MODES_COUNT];
+    m_comparator.aggregateResults(results);
+    for (size_t i = 0; i < MODES_COUNT; ++i) {
+        if (m_comparator.modes()[i]) {
+            QString msg = QString("It took %1 seconds").arg(results[i]);
+            msg += " to solve the required games using ";
+            if (i == 0)
+                msg += "Backtracing";
+            if (i == 1)
+                msg += "Backtracing with Forward Checking";
+            if (i == 2)
+                msg += "Backtracing with Forward Checking and Arc Consistency";
+            ui->transcript->appendPlainText(msg);
+        }
+    }
+}
+
+void MainWindow::handleNoCompare()
+{
+    setCompareState(NoCompare);
+}
+
+void MainWindow::handleProgressed(int value)
+{
+    ui->transcript->appendPlainText(QString("Solved %1 games with the required algorithm(s)")
+                                    .arg(value));
+}
+
+void MainWindow::handlePaused()
+{
+    m_watchCompare.setPaused(true);
+    ui->transcript->appendPlainText("Pausing...");
+    setCompareState(Paused);
+}
+
+void MainWindow::handleResumed()
+{
+    m_watchCompare.resume();
+    ui->transcript->appendPlainText("Resuming...");
+    setCompareState(Resumed);
+}
+
+void MainWindow::handleCancelled()
+{
+    m_watchCompare.cancel();
+    ui->transcript->appendPlainText("Cancelled!");
+    setCompareState(Cancelled);
+}
+
 void MainWindow::setSolveButtonsEnabled(const bool isEnabled)
 {
     ui->backtrackingPB->setEnabled(isEnabled);
@@ -191,6 +327,44 @@ void MainWindow::setControlButtonsEnabled(const bool enableGenerate,
     ui->generatePB->setEnabled(enableGenerate);
     ui->clearGamePB->setEnabled(enableClearGame);
     ui->clearSolnPB->setEnabled(enableClearSoln);
+}
+
+void MainWindow::setCompareState(const MainWindow::CompareState state)
+{
+    if (state != m_nextCompareState) {
+        m_nextCompareState = state;
+        emit stateCompareChanged();
+    }
+}
+
+void MainWindow::fsmCompare()
+{
+    assert(m_compareState != m_nextCompareState);
+
+    ui->comparePB->setEnabled(false);
+    ui->cancelPB->setEnabled(false);
+    ui->resumePB->setEnabled(false);
+    ui->pausePB->setEnabled(false);
+
+    switch(m_nextCompareState) {
+    case Cancelled:
+    case NoCompare:
+        ui->comparePB->setEnabled(true);
+        break;
+
+    case Paused:
+        ui->resumePB->setEnabled(true);
+        ui->cancelPB->setEnabled(true);
+        break;
+
+    case Resumed:
+    case BeingCompared:
+        ui->pausePB->setEnabled(true);
+        ui->cancelPB->setEnabled(true);
+        break;
+    }
+
+    m_compareState = m_nextCompareState;
 }
 
 void MainWindow::clearGame()
@@ -231,6 +405,8 @@ void MainWindow::fsm()
         ui->actionSave_as->setEnabled(false);
         ui->actionOpen->setEnabled(true);
 
+        ui->comparePB->setEnabled(true);
+
         if (m_state != NoGame)
             ui->statusBar->showMessage(tr("Game has been cleared"));
         break;
@@ -241,6 +417,8 @@ void MainWindow::fsm()
 
         ui->actionSave_as->setEnabled(true);
         ui->actionOpen->setEnabled(true);
+
+        ui->comparePB->setEnabled(true);
 
         if (m_state == SolvedGame)
             ui->statusBar->showMessage(tr("Game solution has been erased"));
@@ -255,7 +433,12 @@ void MainWindow::fsm()
         ui->actionOpen->setEnabled(false);
         ui->actionSave_as->setEnabled(false);
 
-        ui->statusBar->showMessage("Game is being solved. Please, wait.");
+        ui->comparePB->setEnabled(false);
+
+        if (m_nextState == BeingSolved)
+            ui->statusBar->showMessage("Game is being solved. Please, wait.");
+//        else if (m_nextState == BeingCompared)
+//            ui->statusBar->showMessage("ِAlgorithms are being compared. Please, wait.");
         break;
 
     case SolvedGame:
@@ -264,6 +447,8 @@ void MainWindow::fsm()
 
         ui->actionOpen->setEnabled(true);
         ui->actionSave_as->setEnabled(true);
+
+        ui->comparePB->setEnabled(true);
 
         ui->statusBar->showMessage(tr("Game has been solved in %1 millisecond")
                                    .arg(m_elapsed));

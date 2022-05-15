@@ -14,8 +14,11 @@
 #include "../back/cell.h"
 #include "../back/kenken.h"
 #include "../back/draw.h"
+#include "../back/comparator.h"
 
 const QString extension = ".kenken";
+
+typedef QVector<kenken*> GamesArr;
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +28,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     enum State{NoGame, UnsolvedGame, BeingSolved, SolvedGame};
+    enum CompareState{NoCompare, BeingCompared, Paused, Resumed, Cancelled};
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -32,6 +36,7 @@ public:
 
 signals:
     void stateChanged();
+    void stateCompareChanged();
 
 private slots:
     void generateAction();
@@ -44,6 +49,15 @@ private slots:
     void saveGame();
     void loadGame();
 
+    //Compare
+    void compareAlgo();
+    void handleCompareAlgo();
+    void handleNoCompare();
+    void handleProgressed(int value);
+    void handlePaused();
+    void handleResumed();
+    void handleCancelled();
+
 private:
     Ui::MainWindow *ui;
     uint8_t m_gridSize;
@@ -52,8 +66,11 @@ private:
     draw y;
     State m_state, m_nextState;
     QElapsedTimer m_time;
-    int m_elapsed;
-    QFutureWatcher<void> m_watcher;
+    size_t m_elapsed;
+    QFutureWatcher<void> m_watcher, m_watchCompare;
+
+    Comparator m_comparator;
+    CompareState m_compareState, m_nextCompareState;
 
     //The function generates randomly a gridSize if it is zero
     void generateGame(uint8_t gridSize = 0, operation op = ALL_OPERATIONS);
@@ -78,6 +95,9 @@ private:
     void setControlButtonsEnabled(const bool enableGenerate,
                                   const bool enableClearGame,
                                   const bool enableClearSoln);
+
+    void setCompareState(const CompareState state);
+    void fsmCompare();
 };
 
 #endif // MAINWINDOW_H
