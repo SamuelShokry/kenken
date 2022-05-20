@@ -30,12 +30,15 @@ public:
     void setOp(const operation &op);
 
     Mode* modes();
-    void setModes(const Mode *modes);
+    void setModes(const Modes modes);
+
+    GamesArray& gamesArray();
+    const GamesArray& gamesArray() const;
 
     int count() const;
     void setCount(int count);
 
-    void aggregateResults(double *results);
+    void aggregateResults(double results[]);
 
     void clear();
 

@@ -165,11 +165,18 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <widget class="QPlainTextEdit" name="transcript">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPlainTextEdit" name="transcript">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="GameView" name="compareGamesView"/>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -279,6 +286,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="pausePB">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Pause</string>
             </property>
@@ -286,6 +296,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="resumePB">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Resume</string>
             </property>
@@ -293,6 +306,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="cancelPB">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Cancel</string>
             </property>

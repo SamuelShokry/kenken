@@ -62,6 +62,7 @@ private:
     Ui::MainWindow *ui;
     uint8_t m_gridSize;
     GameGUI *m_gameGUI;
+    GameGUI *m_gameGUIComp;
     kenken *m_game;
     draw y;
     State m_state, m_nextState;
@@ -78,6 +79,8 @@ private:
 
     void clearGame();
     void clearSoln();
+
+    void drawComparedGame(const int value);
 
     //Possible transitions:
     //NoGame --> UnsolvedGame
@@ -98,6 +101,8 @@ private:
 
     void setCompareState(const CompareState state);
     void fsmCompare();
+
+    void setActivateMainGame(const bool enabled);
 };
 
 #endif // MAINWINDOW_H

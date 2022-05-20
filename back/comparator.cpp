@@ -53,10 +53,20 @@ Mode *Comparator::modes()
     return m_modes;
 }
 
-void Comparator::setModes(const Mode *modes)
+void Comparator::setModes(const Modes modes)
 {
     for (size_t i = 0; i < MODES_COUNT; ++i)
         m_modes[i] = modes[i];
+}
+
+GamesArray &Comparator::gamesArray()
+{
+    return m_games;
+}
+
+const GamesArray &Comparator::gamesArray() const
+{
+    return m_games;
 }
 
 int Comparator::count() const
@@ -69,7 +79,7 @@ void Comparator::setCount(int count)
     m_count = count;
 }
 
-void Comparator::aggregateResults(double *results)
+void Comparator::aggregateResults(double results[MODES_COUNT])
 {
     for (size_t i = 0; i < MODES_COUNT; ++i) {
         results[i] = 0;
@@ -103,13 +113,14 @@ void Comparator::solve(Game *game)
             else
                 op = BACKTRACKING_WITH_FORWARDCHECKING_AND_ARC_CONSISTENCY;
 
+            if (game->m_kenken->get_is_solved())
+                game->m_kenken->clear_solution(); //clear the solution.
+
             auto start = std::chrono::steady_clock::now();
             game->m_kenken->solve(op);
             auto end = std::chrono::steady_clock::now();
 
-            m_durations[i][game->m_index] = end - start;
-
-            game->m_kenken->clear_solution(); //clear the solution.
+            m_durations[i][game->m_index] = end - start;            
         }
     }
 }

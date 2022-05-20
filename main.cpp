@@ -10,6 +10,9 @@
 #include "back/draw.h"
 #include "back/kenkenreader.h"
 #include "back/kenkenwriter.h"
+#include "back/comparator.h"
+
+#include <QThread>
 #endif
 
 /*---------------- Operations Categories ------------------
@@ -74,12 +77,58 @@ int main(int argc, char *argv[])
 
     KenkenReader reader;
     KenkenWriter writer;
+    Comparator comp;
+    Modes modes;
+    QFutureWatcher<void> watcher;
+    double results[MODES_COUNT];
 
     for (int Size = 3; Size < 10; ++Size) {
         for (int i = 0; i < 100; ++i) {
             for (int op = 0; op < 4; ++op) {
-                printf("i=%d, Size=%d, op=%d\n", i, Size, op);
-                std::cout << std::flush;
+//                printf("i=%d, Size=%d, op=%d\n", i, Size, op);
+//                std::cout << std::flush;
+
+
+                for (int j = 1; j <= 3; ++j) {
+                    printf("i=%d, Size=%d, op=%d, j =%d\n", i, Size, op, j);
+                    std::cout << std::flush;
+
+                    modes[0] = (j&1) != 0;
+                    modes[1] = (j&2) != 0;
+                    modes[2] = (j&4) != 0;
+
+                    comp.setCount(i+1);
+                    comp.setOp(static_cast<operation>(op));
+                    comp.setSize(Size);
+                    comp.setModes(modes);
+
+
+                    comp.compare(watcher);
+                    watcher.future().waitForFinished();
+                    assert(watcher.future().isFinished());
+//                    do {
+//                        watcher.future().waitForFinished();
+//                        std::cout << watcher.future().isFinished() << "\n" << std::flush;
+//                    } while (!watcher.future().isFinished());
+
+                    comp.aggregateResults(results);
+
+                    for (size_t k = 0; k < MODES_COUNT; ++k) {
+                        if (comp.modes()[k]) {
+                            QString msg = QString("It took %1 seconds").arg(results[k]);
+                            msg += " to solve the required games using ";
+                            if (k == 0)
+                                msg += "Backtracing";
+                            if (k == 1)
+                                msg += "Backtracing with Forward Checking";
+                            if (k == 2)
+                                msg += "Backtracing with Forward Checking and Arc Consistency";
+                            std::cout << msg.toStdString() << "\n" << std::flush;
+                        }
+                    }
+
+                    comp.clear();
+                }
 
                 kenken x(Size, static_cast<operation>(op));
 

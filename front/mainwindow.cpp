@@ -14,11 +14,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_gridSize(3),
     m_gameGUI(new GameGUI(0, Q_NULLPTR, Q_NULLPTR)),
+    m_gameGUIComp(new GameGUI(0, Q_NULLPTR, Q_NULLPTR)),
     m_game(Q_NULLPTR),
     m_state(NoGame),
     m_nextState(NoGame),
-    m_elapsed(0)
-
+    m_elapsed(0),
+    m_compareState(NoCompare),
+    m_nextCompareState(NoCompare)
 {
     ui->setupUi(this);
 
@@ -41,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->graphicsView->setScene(new QGraphicsScene());
     ui->graphicsView->scene()->addItem(m_gameGUI);
+
+    ui->compareGamesView->setScene(new QGraphicsScene());
+    ui->compareGamesView->scene()->addItem(m_gameGUIComp);
 
     // Generating the main game
     connect(ui->generatePB, &QPushButton::clicked,
@@ -88,8 +93,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->tabWidget->setTabText(0, "Main Game");
     ui->tabWidget->setTabText(1, "Compare Algorithms");
-
-    handleNoCompare();
 }
 
 MainWindow::~MainWindow()
@@ -153,7 +156,7 @@ void MainWindow::solveGame()
         m_watcher.setFuture(QtConcurrent::run(m_game, &kenken::solve, BACKTRACKING_WITH_FORWARD_CHECKING));
     } else if (sender() == ui->arcPB) {
         m_time.start();
-        QThread::sleep(3);  //TODO: call the actual solving function
+        m_watcher.setFuture(QtConcurrent::run(m_game, &kenken::solve, BACKTRACKING_WITH_FORWARDCHECKING_AND_ARC_CONSISTENCY));
     }
 }
 
@@ -218,10 +221,12 @@ void MainWindow::loadGame()
 
 void MainWindow::compareAlgo()
 {
+    ui->comparePB->setEnabled(false);
     //count check
     int count = ui->compareCount->text().toInt();
-    if (count < 1) {
-        QMessageBox::warning(this, "Error", "Please insert a positive number in the games count field");
+    if (count < 1 || count > 100000) {
+        QMessageBox::warning(this, "Error", "Please insert a positive number less than 100,000 in the games count field");
+        ui->comparePB->setEnabled(true);
         return;
     }
 
@@ -233,10 +238,12 @@ void MainWindow::compareAlgo()
 
     if ((modes[0] + modes[1] + modes[2]) == 0) {
         QMessageBox::warning(this, "Error", "Please choose AT LEAST 1 algorithm to run iteratively");
+        ui->comparePB->setEnabled(true);
         return;
     }
 
     setCompareState(BeingCompared);
+    m_comparator.clear();
     int size = ui->compareSize->value();
     operation op = static_cast<operation>(ui->typeCompare->currentIndex());
 
@@ -253,6 +260,10 @@ void MainWindow::handleCompareAlgo()
     setCompareState(NoCompare);
     if (m_watchCompare.isCanceled())
         return;
+
+    assert(m_watchCompare.isFinished());
+
+    drawComparedGame(m_comparator.count()-1);
 
     QString msg = "\n";
     msg += "\n*************************************";
@@ -288,8 +299,15 @@ void MainWindow::handleNoCompare()
 
 void MainWindow::handleProgressed(int value)
 {
+    if (value == 0) return;
     ui->transcript->appendPlainText(QString("Solved %1 games with the required algorithm(s)")
                                     .arg(value));
+
+    const GamesArray &array = m_comparator.gamesArray();
+    if (value >= array.games().length())
+        return;
+
+    drawComparedGame(value);
 }
 
 void MainWindow::handlePaused()
@@ -350,21 +368,31 @@ void MainWindow::fsmCompare()
     case Cancelled:
     case NoCompare:
         ui->comparePB->setEnabled(true);
+        setActivateMainGame(true);
         break;
 
     case Paused:
         ui->resumePB->setEnabled(true);
         ui->cancelPB->setEnabled(true);
+        setActivateMainGame(false);
         break;
 
     case Resumed:
     case BeingCompared:
         ui->pausePB->setEnabled(true);
         ui->cancelPB->setEnabled(true);
+        setActivateMainGame(false);
         break;
     }
 
     m_compareState = m_nextCompareState;
+}
+
+void MainWindow::setActivateMainGame(const bool enabled)
+{
+    ui->mainToolBar->setEnabled(enabled);
+    ui->mainGameTab->setEnabled(enabled);
+    ui->menuBar->setEnabled(enabled);
 }
 
 void MainWindow::clearGame()
@@ -385,6 +413,25 @@ void MainWindow::clearSoln()
     setState(UnsolvedGame);
 }
 
+void MainWindow::drawComparedGame(const int value)
+{
+    GamesArray &array = m_comparator.gamesArray();
+    Game *game = array.games()[value];
+    kenken *ken = game->m_kenken;
+
+    const int size = ken->get_game_grid_ptr()->get_grid_size();
+
+    m_gameGUIComp->setGrid(size,
+                       ken->get_game_grid_ptr());
+
+    ui->compareGamesView->scene()->setSceneRect(0, 0,
+                                            m_gameGUIComp->length(),
+                                            m_gameGUIComp->length());
+
+    m_gameGUIComp->drawSoln(size,
+                        ken->get_game_grid_ptr()->get_cells_ptr());
+}
+
 void MainWindow::setState(const MainWindow::State state)
 {
     if (state != m_nextState) {
@@ -399,6 +446,7 @@ void MainWindow::fsm()
 
     switch(m_nextState) {
     case NoGame:
+        ui->comparisionTab->setEnabled(true);
         setSolveButtonsEnabled(false);
         setControlButtonsEnabled(true, false, false);
 
@@ -412,6 +460,7 @@ void MainWindow::fsm()
         break;
 
     case UnsolvedGame:
+        ui->comparisionTab->setEnabled(true);
         setSolveButtonsEnabled(true);
         setControlButtonsEnabled(true, true, false);
 
@@ -427,6 +476,7 @@ void MainWindow::fsm()
         break;
 
     case BeingSolved:
+        ui->comparisionTab->setEnabled(false);
         setSolveButtonsEnabled(false);
         setControlButtonsEnabled(false, false, false);
 
@@ -442,6 +492,7 @@ void MainWindow::fsm()
         break;
 
     case SolvedGame:
+        ui->comparisionTab->setEnabled(true);
         setSolveButtonsEnabled(false);
         setControlButtonsEnabled(true, true, true);
 
