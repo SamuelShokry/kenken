@@ -8,14 +8,13 @@ class KenkenReader;
 class cage
 {
 private:
-	int numberOfCells;		//number of cells in the cage.
-	int	targetValue;		//target value of the cage.
-	cell** cageCells;   	//array of pointers to the grid cells included in the cage.
-	char operation;			//the operation that will be done in the cage.
-	int firstCellInCage;  	//index of the first cell in this cage (used for printing the target value and the operation).
+	int numberOfCells;				//number of cells in the cage.
+	int	targetValue;				//target value of the cage.
+	cell** cageCells  = nullptr;   	//array of pointers to the grid cells included in the cage.
+	char operation;					//the operation that will be done in the cage.
+	int firstCellInCage;  			//index of the first cell in this cage (used for printing the target value and the operation).
 
 public:
-    cage() {cageCells = nullptr;}
     ~cage() {delete_cage_cells_Ptr();}
 
 	void set_number_of_cells(int n);

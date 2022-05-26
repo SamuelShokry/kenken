@@ -18,8 +18,6 @@ public:
 
     bool* get_backtrackingFCH_domain_ptr();
 
-    int* get_number_of_domains_per_variable_ptr();
-
     bool check_constraints(int cellIndex);
 
     void changing_domain(int cellIndex, int domainIndex, bool value);

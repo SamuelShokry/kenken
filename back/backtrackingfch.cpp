@@ -51,11 +51,6 @@ bool* BacktrackingFCH::get_backtrackingFCH_domain_ptr()
 	return domain;
 }
 
-int* BacktrackingFCH::get_number_of_domains_per_variable_ptr()
-{
-//	return numberOfDomainsPerVariable;
-}
-
 void BacktrackingFCH::changing_domain(int cellIndex, int domainIndex, bool value)
 {
     int gridSize = variables->get_grid_size();

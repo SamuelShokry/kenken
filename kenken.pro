@@ -12,6 +12,7 @@ TARGET = kenken
 TEMPLATE = app
 
 HEADERS += \
+    back/arc.h \
     back/backtracking.h \
     back/backtrackingfch.h \
     back/backtrackingfchac.h \
@@ -36,6 +37,7 @@ HEADERS += \
     back/comparator.h
 
 SOURCES += \
+    back/arc.cpp \
     back/backtracking.cpp \
     back/backtrackingfch.cpp \
     back/backtrackingfchac.cpp \
