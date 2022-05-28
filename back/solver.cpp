@@ -23,29 +23,29 @@ void solver::solve(grid* gridPtr)
     switch(gameSolvingTechnique)
     {
     case BACKTRACKING:
-        {
-          solverPtr = new Backtracking(gridPtr);
-          static_cast<Backtracking*>(solverPtr)->solve(0);
-        }
+        solverPtr = new Backtracking(gridPtr);
+        static_cast<Backtracking*>(solverPtr)->solve(0);
         break;
 
     case BACKTRACKING_WITH_FORWARD_CHECKING:
         solverPtr = new BacktrackingFCH(gridPtr);
+        static_cast<BacktrackingFCH*>(solverPtr)->initialize_domain();
         static_cast<BacktrackingFCH*>(solverPtr)->solve(0);
         break;
 
     case BACKTRACKING_WITH_FORWARDCHECKING_AND_ARC_CONSISTENCY:
-        solverPtr = new Backtracking(gridPtr);
+        solverPtr = new BacktrackingFCHAC(gridPtr);
+        static_cast<BacktrackingFCHAC*>(solverPtr)->solve(gridPtr);
         break;
     }
 }
 
 void solver::clear_solution(grid* gridPtr)
 {
-	int gridSize = gridPtr->get_grid_size();
-	for(int i=0; i<(gridSize*gridSize); i++)
-	{
-		gridPtr->get_cells_ptr()[i].set_cell_value(0);
+    int gridSize = gridPtr->get_grid_size();
+    for(int i=0; i<(gridSize*gridSize); i++)
+    {
+        gridPtr->get_cells_ptr()[i].set_cell_value(0);
     }
 }
 

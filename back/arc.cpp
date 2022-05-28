@@ -65,6 +65,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             if(foundedFlag)
             {
                 changedVector.push_back((*firstDomain)[i]);
+                foundedFlag = false;
             }
             else
             {
@@ -86,6 +87,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             if(foundedFlag)
             {
                 changedVector.push_back((*firstDomain)[i]);
+                foundedFlag = false;
             }
             else
             {
@@ -107,6 +109,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             if(foundedFlag)
             {
                 changedVector.push_back((*firstDomain)[i]);
+                foundedFlag = false;
             }
             else
             {
@@ -128,6 +131,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             if(foundedFlag)
             {
                 changedVector.push_back((*firstDomain)[i]);
+                foundedFlag = false;
             }
             else
             {
@@ -151,6 +155,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             if(foundedFlag)
             {
                 changedVector.push_back((*firstDomain)[i]);
+                foundedFlag = false;
             }
             else
             {
@@ -183,4 +188,9 @@ void Arc::swap_cells(void)
     int temp = firstCell;
     firstCell = secondCell;
     secondCell = temp;
+}
+
+void Arc::print_arc(void)
+{
+	std::cout << firstCell <<' ' << secondCell << ' ' << constraintChar << ' ' << constraintValue << std::endl;
 }

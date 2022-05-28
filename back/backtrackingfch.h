@@ -18,6 +18,8 @@ public:
 
     bool* get_backtrackingFCH_domain_ptr();
 
+    void initialize_domain(std::vector <std::vector <int>>* Domains = nullptr);
+
     bool check_constraints(int cellIndex);
 
     void changing_domain(int cellIndex, int domainIndex, bool value);

@@ -27,6 +27,8 @@ public:
     bool is_equal(Arc x);
 
     void swap_cells(void);
+
+    void print_arc(void);
 };
 
 #endif // ARC_H
