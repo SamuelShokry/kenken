@@ -1,5 +1,5 @@
-#define GUI
-//#define CONSOLE
+//#define GUI
+#define CONSOLE
 //#define TEST_CORRECTNESS
 
 #ifdef GUI
@@ -25,52 +25,60 @@
 int main(int argc, char *argv[])
 {
 #ifdef GUI
-	QApplication a(argc, argv);
-	MainWindow w;
-	w.show();
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
 
-	return a.exec();
+    return a.exec();
 #endif
 
 #ifdef CONSOLE
-	std::cout << "Started\n";
+    std::cout << "Started\n";
     srand (0);
-	int Size;
+    int Size;
 
-	double t1 =0, t2 =0;
-	clock_t c1 = 0, c2 = 0;
+    double t1 =0, t2 =0, t3 =0;
+    clock_t c1 = 0, c2 = 0;
 
     for(int i=0; i<100; i++)
-	{
-		std::cout << "i = " << i << std::endl;
+    {
+        std::cout << "i = " << i << std::endl;
         Size = 9;
-		draw y;
-		kenken x(Size, ALL_OPERATIONS);
-		x.generate_game();
+        draw y;
+        kenken x(Size, ALL_OPERATIONS);
+        x.generate_game();
         printf("Game generated\n");
         std::cout << std::flush;
-		//First Method
-		c1 = clock();
-		x.solve(BACKTRACKING);
-		c2 = clock();
-		t1 += ((double(c2 - c1)*1000)/CLOCKS_PER_SEC);
+        //First Method
+        c1 = clock();
+        x.solve(BACKTRACKING);
+        c2 = clock();
+        t1 += ((double(c2 - c1)*1000)/CLOCKS_PER_SEC);
+        x.clear_solution(); //clear the solution.
 
-		x.clear_solution(); //clear the solution.
+        //second Method
+        c1 = clock();
+        x.solve(BACKTRACKING_WITH_FORWARD_CHECKING);
+        c2 = clock();
+        t2 += ((double(c2 - c1)*1000)/CLOCKS_PER_SEC);
+        x.clear_solution(); //clear the solution.
 
-		// second Method/
-		c1 = clock();
-		x.solve(BACKTRACKING_WITH_FORWARD_CHECKING);
-		c2 = clock();
-		t2 += ((double(c2 - c1)*1000)/CLOCKS_PER_SEC);
+        // second Method/
+        c1 = clock();
+        x.solve(BACKTRACKING_WITH_FORWARDCHECKING_AND_ARC_CONSISTENCY);
+        c2 = clock();
+        t3 += ((double(c2 - c1)*1000)/CLOCKS_PER_SEC);
+
         y.print(x.get_game_grid_ptr());
-        printf("t1 = %lf, t2 = %lf\n", t1, t2);
-		x.delete_game();
-//		std::cout << std::endl;
-	}
+        printf("t1 = %lf, t2 = %lf, t3 = %lf\n", t1, t2, t3);
+        x.delete_game();
+        //		std::cout << std::endl;
+    }
 
-	std::cout << "-------------------------- Finish ------------------------------" << std::endl;
-	std::cout << "Backtracking Time = " << t1 << std::endl;
-	std::cout << "Backtracking with Forward Time = " << t2 << std::endl;
+    std::cout << "-------------------------- Finish ------------------------------" << std::endl;
+    std::cout << "Backtracking Time = " << t1 << std::endl;
+    std::cout << "Backtracking with Forward Time = " << t2 << std::endl;
+    std::cout << "Backtracking with Forward and Arc Consistabcy Time = " << t3 << std::endl;
 #endif
 
 #ifdef TEST_CORRECTNESS
@@ -85,8 +93,8 @@ int main(int argc, char *argv[])
     for (int Size = 3; Size < 10; ++Size) {
         for (int i = 0; i < 100; ++i) {
             for (int op = 0; op < 4; ++op) {
-//                printf("i=%d, Size=%d, op=%d\n", i, Size, op);
-//                std::cout << std::flush;
+                //                printf("i=%d, Size=%d, op=%d\n", i, Size, op);
+                //                std::cout << std::flush;
 
 
                 for (int j = 1; j <= 3; ++j) {
@@ -106,10 +114,10 @@ int main(int argc, char *argv[])
                     comp.compare(watcher);
                     watcher.future().waitForFinished();
                     assert(watcher.future().isFinished());
-//                    do {
-//                        watcher.future().waitForFinished();
-//                        std::cout << watcher.future().isFinished() << "\n" << std::flush;
-//                    } while (!watcher.future().isFinished());
+                    //                    do {
+                    //                        watcher.future().waitForFinished();
+                    //                        std::cout << watcher.future().isFinished() << "\n" << std::flush;
+                    //                    } while (!watcher.future().isFinished());
 
                     comp.aggregateResults(results);
 
@@ -153,5 +161,5 @@ int main(int argc, char *argv[])
     }
 #endif
 
-	return 0;
+    return 0;
 }
