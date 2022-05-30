@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     enum State{NoGame, UnsolvedGame, BeingSolved, SolvedGame};
-    enum CompareState{NoCompare, BeingCompared, Paused, Resumed, Cancelled};
+    enum CompareState{NoCompare, BeingCompared, Paused, Resumed, Cancelling, Cancelled};
 
 public:
     explicit MainWindow(QWidget *parent = 0);

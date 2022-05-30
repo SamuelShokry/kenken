@@ -258,8 +258,12 @@ void MainWindow::compareAlgo()
 void MainWindow::handleCompareAlgo()
 {
     setCompareState(NoCompare);
-    if (m_watchCompare.isCanceled())
+    if (m_watchCompare.isCanceled()) {
+        ui->transcript->appendPlainText("Cancelled!");
+        setCompareState(Cancelled);
+
         return;
+    }
 
     assert(m_watchCompare.isFinished());
 
@@ -326,9 +330,10 @@ void MainWindow::handleResumed()
 
 void MainWindow::handleCancelled()
 {
+    setCompareState(Cancelling);
     m_watchCompare.cancel();
-    ui->transcript->appendPlainText("Cancelled!");
-    setCompareState(Cancelled);
+    ui->transcript->appendPlainText("Cancelling, please wait for clean up!");
+
 }
 
 void MainWindow::setSolveButtonsEnabled(const bool isEnabled)
@@ -374,6 +379,10 @@ void MainWindow::fsmCompare()
     case Paused:
         ui->resumePB->setEnabled(true);
         ui->cancelPB->setEnabled(true);
+        setActivateMainGame(false);
+        break;
+
+    case Cancelling:
         setActivateMainGame(false);
         break;
 
