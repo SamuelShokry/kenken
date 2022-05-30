@@ -24,7 +24,7 @@ public:
 
     bool remove_inconsistant_values(std::vector <int>* firstDomain, std::vector <int>* secondDomain);
 
-    bool is_equal(Arc x);
+    bool is_equal(Arc &x);
 
     void swap_cells(void);
 

@@ -30,20 +30,26 @@ int Arc::get_constraint_value(void)
 
 bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector <int>* secondDomain)
 {
-    int size1 = firstDomain->size();
-    int size2 = secondDomain->size();
     bool result = false;
     bool foundedFlag = false;
+
+    auto iter1 = firstDomain->begin();
+    auto begin2 = secondDomain->begin();
+
+    auto end1 = firstDomain->end();
+    auto end2 = secondDomain->end();
+
     std::vector <int> changedVector;
+    changedVector.reserve(firstDomain->size()<<1);
 
     switch(this->constraintChar)
     {
     case' ':
-        for(int i=0; i<size1; i++)
+        for(; iter1 != end1; ++iter1)
         {
-            if((*firstDomain)[i] == constraintValue)
+            if((*iter1) == constraintValue)
             {
-                changedVector.push_back((*firstDomain)[i]);
+                changedVector.push_back((*iter1));
             }
             else
             {
@@ -52,11 +58,11 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
         }
         break;
     case '!':
-        for(int i=0; i<size1; i++)
+        for(; iter1 != end1; ++iter1)
         {
-            for(int j=0; j<size2; j++)
+            for(auto iter2 = begin2; iter2 != end2; ++iter2)
             {
-                if((*firstDomain)[i] != (*secondDomain)[j])
+                if((*iter1) != (*iter2))
                 {
                     foundedFlag = true;
                     break;
@@ -64,7 +70,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             }
             if(foundedFlag)
             {
-                changedVector.push_back((*firstDomain)[i]);
+                changedVector.push_back((*iter1));
                 foundedFlag = false;
             }
             else
@@ -74,11 +80,11 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
         }
         break;
     case '+':
-        for(int i=0; i<size1; i++)
+        for(; iter1 != end1; ++iter1)
         {
-            for(int j=0; j<size2; j++)
+            for(auto iter2 = begin2; iter2 != end2; ++iter2)
             {
-                if((*firstDomain)[i] + (*secondDomain)[j] <= constraintValue)
+                if((*iter1) + (*iter2) <= constraintValue)
                 {
                     foundedFlag = true;
                     break;
@@ -86,7 +92,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             }
             if(foundedFlag)
             {
-                changedVector.push_back((*firstDomain)[i]);
+                changedVector.push_back((*iter1));
                 foundedFlag = false;
             }
             else
@@ -96,11 +102,11 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
         }
         break;
     case '*':
-        for(int i=0; i<size1; i++)
+        for(; iter1 != end1; ++iter1)
         {
-            for(int j=0; j<size2; j++)
+            for(auto iter2 = begin2; iter2 != end2; ++iter2)
             {
-                if((*firstDomain)[i] * (*secondDomain)[j] <= constraintValue)
+                if((*iter1) * (*iter2) <= constraintValue)
                 {
                     foundedFlag = true;
                     break;
@@ -108,7 +114,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             }
             if(foundedFlag)
             {
-                changedVector.push_back((*firstDomain)[i]);
+                changedVector.push_back((*iter1));
                 foundedFlag = false;
             }
             else
@@ -118,11 +124,11 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
         }
         break;
     case '-':
-        for(int i=0; i<size1; i++)
+        for(; iter1 != end1; ++iter1)
         {
-            for(int j=0; j<size2; j++)
+            for(auto iter2 = begin2; iter2 != end2; ++iter2)
             {
-                if(std::abs((*firstDomain)[i] - (*secondDomain)[j]) == constraintValue)
+                if(std::abs((*iter1) - (*iter2)) == constraintValue)
                 {
                     foundedFlag = true;
                     break;
@@ -130,7 +136,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             }
             if(foundedFlag)
             {
-                changedVector.push_back((*firstDomain)[i]);
+                changedVector.push_back((*iter1));
                 foundedFlag = false;
             }
             else
@@ -140,12 +146,12 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
         }
         break;
     case '/':
-        for(int i=0; i<size1; i++)
+        for(; iter1 != end1; ++iter1)
         {
-            for(int j=0; j<size2; j++)
+            for(auto iter2 = begin2; iter2 != end2; ++iter2)
             {
-                int minValue = std::min((*firstDomain)[i], (*secondDomain)[j]);
-                int maxValue = std::max((*firstDomain)[i], (*secondDomain)[j]);
+                int minValue = std::min((*iter1), (*iter2));
+                int maxValue = std::max((*iter1), (*iter2));
                 if((maxValue/minValue) == constraintValue && (maxValue % minValue) == 0)
                 {
                     foundedFlag = true;
@@ -154,7 +160,7 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
             }
             if(foundedFlag)
             {
-                changedVector.push_back((*firstDomain)[i]);
+                changedVector.push_back((*iter1));
                 foundedFlag = false;
             }
             else
@@ -173,14 +179,11 @@ bool Arc::remove_inconsistant_values(std::vector <int>* firstDomain, std::vector
     return result;
 }
 
-bool Arc::is_equal(Arc x)
+bool Arc::is_equal(Arc &x)
 {
-    int cell1 = x.get_first_cell();
-    int cell2 = x.get_second_cell();
-    char c = x.get_constraint_char();
-    if(cell1 == firstCell && cell2 == secondCell && c == constraintChar)
-        return true;
-    return false;
+    return (x.get_first_cell() == firstCell
+            && x.get_second_cell() == secondCell
+            && x.get_constraint_char() == constraintChar);
 }
 
 void Arc::swap_cells(void)

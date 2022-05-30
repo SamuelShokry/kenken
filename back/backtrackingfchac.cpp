@@ -6,23 +6,32 @@ BacktrackingFCHAC::BacktrackingFCHAC(grid* gridPtr)
 	int gridSize = gridPtr->get_grid_size();
 	cell* cells = gridPtr->get_cells_ptr();
 	cage* cages = gridPtr->get_cages_ptr();
-	std::vector <int> d;    //temp vector for domain of each cell.
+    std::vector <int> d(gridSize);    //temp vector for domain of each cell.
 
 	//Initializing the domain vector from 1 to gridSize;
-	for(int i=1; i<= gridSize; i++)
-		d.push_back(i);
+    for(int i=1; i<= gridSize; ++i)
+        d[i-1] = i;
 
 	//Loop through all the cells in the grid.
-	for(int i=0; i<(gridSize * gridSize); i++)
+    const int gridSizeSquared = (gridSize * gridSize);
+    arcsPerCell.resize(gridSizeSquared);
+    arcsFlag.resize(gridSizeSquared);
+    for(int i=0; i<gridSizeSquared; ++i)
 	{
 		std::vector <Arc> arcs; //temp vector to hold all the arcs to the current cell;
 		std::vector <bool> arcsF; //temp vector to hold all the arcs flags to the current cell;
+        arcs.reserve(gridSize << 2);
+        arcsF.reserve(gridSize << 2);
 		int row = i / gridSize;
 		int col = i % gridSize;
 
 		//Row Arc Creating.
-		int desiredCell = (row * gridSize); // first cell in the current row.
-		for(int j = 0; j < gridSize; j++)
+        int desiredCell = (row * gridSize); // first cell in the current row.
+        //Column Arc Creating.
+        int desiredCellCol = col;               // first cell in the current column.
+
+        // Merge the for loops for both rows and columns
+        for(int j = 0; j < gridSize; ++j)
 		{
 			if(desiredCell != i) //If the Iterator Index isn't at the same cell.
 			{
@@ -35,26 +44,21 @@ BacktrackingFCHAC::BacktrackingFCHAC(grid* gridPtr)
 				//set the current arc flag to be true which means that the arc is in the queue.
 				arcsF.push_back(true);
 			}
-			desiredCell ++;         //Move to another cell in the same row.
-		}
+            ++desiredCell;         //Move to another cell in the same row.
 
-		//Column Arc Creating.
-		desiredCell = col;               // first cell in the current column.
-		for(int j = 0; j < gridSize; j++)
-		{
-			if(desiredCell != i)    //If the Iterator Index isn't at the same cell.
-			{
-				Arc temp;
-				temp.set_arc(i, desiredCell, '!', 0);   //Creating a new Arc.
-				//Push the arc to the qeue to be used by AC-3 Algorithm.
-				this->q.push(temp);
-				//Push the arc to the vector of arcs to be used in the search for arcs.
-				arcs.push_back(temp);
-				//set the current arc flag to be true which means that the arc is in the queue.
-				arcsF.push_back(true);
-			}
-			desiredCell += gridSize;  //Move to another cell in the same col.
-		}
+            if(desiredCellCol != i)    //If the Iterator Index isn't at the same cell.
+            {
+                Arc temp;
+                temp.set_arc(i, desiredCellCol, '!', 0);   //Creating a new Arc.
+                //Push the arc to the qeue to be used by AC-3 Algorithm.
+                this->q.push(temp);
+                //Push the arc to the vector of arcs to be used in the search for arcs.
+                arcs.push_back(temp);
+                //set the current arc flag to be true which means that the arc is in the queue.
+                arcsF.push_back(true);
+            }
+            desiredCellCol += gridSize;  //Move to another cell in the same col.
+        }
 
 		//Cage Arc Creating
 		int cageIndex = cells[i].get_cage_index();
@@ -77,14 +81,14 @@ BacktrackingFCHAC::BacktrackingFCHAC(grid* gridPtr)
 		{
 			cell** cageCells = cages[cageIndex].get_cage_cells_ptr();
 			//Loop through all cells in the current cage.
-			for(int j=0; j<cellsNumberPerCage; j++)
+            for(int j=0; j<cellsNumberPerCage; ++j, ++cageCells)
 			{
 				//Check if the current iterator index isn't the same cell.
-				if(cageCells[j] != (cells + i))
+                if(*cageCells != (cells + i))
 				{
 					Arc temp;
 					//Creating a new Arc.
-					temp.set_arc(i, std::abs(cells - cageCells[j]), cages[cageIndex].get_operation() , cages[cageIndex].get_target_value());
+                    temp.set_arc(i, std::abs(cells - *cageCells), cages[cageIndex].get_operation() , cages[cageIndex].get_target_value());
 					//Push the arc to the qeue to be used by AC-3 Algorithm.
 					this->q.push(temp);
 					//Push the arc to the vector of arcs to be used in the search for arcs.
@@ -97,9 +101,9 @@ BacktrackingFCHAC::BacktrackingFCHAC(grid* gridPtr)
 		//Push the current cell domain to the domain vector of the all cells.
 		this->Domains.push_back(d);
 		//Push the current cell arcs to the arcs vector of the all cells.
-		arcsPerCell.push_back(arcs);
+        arcsPerCell.push_back(arcs);
 		//Push the current cell arcs flags to the arcs flags vector of the all cells.
-		arcsFlag.push_back(arcsF);
+        arcsFlag.push_back(arcsF);
 	}
 }
 
@@ -113,12 +117,13 @@ bool BacktrackingFCHAC::AC_3()
 		int cellj = currentArc.get_second_cell();
 
 		//Loop through all the arcs of the celli to find the index of the arc with cellj to put it false.
-		int arcsIsize = arcsPerCell[celli].size();
-		for(int i =0; i < arcsIsize; i++)
+        auto begin = arcsPerCell[celli].begin();
+        auto end = arcsPerCell[celli].end();
+        for (auto it = begin; it != end; ++it)
 		{
-			if(currentArc.is_equal(arcsPerCell[celli][i]))
+            if(currentArc.is_equal(*it))
 			{
-				arcsFlag[celli][i] = false;                     //Delete the arc.
+                arcsFlag[celli][it - begin] = false; //Delete the arc.
 			}
 		}
 
@@ -126,31 +131,32 @@ bool BacktrackingFCHAC::AC_3()
 		{
 			if(Domains[celli].empty())
 				return false;
-			int arcsSize = arcsPerCell[celli].size();  //Number of arcs to the celli.
+            //int arcsSize = arcsPerCell[celli].size();  //Number of arcs to the celli.
 			//Loop through all cell1 neighbors (get all cell1 arcs from arcsPerCell vector).
-			for(int i=0; i < arcsSize; i++)
+            for(auto iter = begin; iter != end; ++iter)
 			{
-				Arc tempArc = arcsPerCell[celli][i];     //get the first arr of celli arcs.
-				int cellk = tempArc.get_second_cell();   //get the neighbor cell in this arc.
-
+                //Arc tempArc = arcsPerCell[celli][i];     //get the first arr of celli arcs.
+                int cellk = iter->get_second_cell();   //get the neighbor cell in this arc.
 				if(cellk != cellj)                       //check if the current arc isn't the removed arc in the first algorithm.
 				{
 					//swap the arc
-					tempArc.swap_cells();
-					int arcsKsize = arcsPerCell[cellk].size();  //Number of arcs to the cellk.
+                    iter->swap_cells();
+                    //int arcsKsize = arcsPerCell[cellk].size();  //Number of arcs to the cellk.
 					//Loop through all the arcs of the cellk to find the index of the arc with celli
-
-					for(int arcIndex =0; arcIndex < arcsKsize; arcIndex++)
+                    auto beginK = arcsPerCell[cellk].begin();
+                    auto endK = arcsPerCell[cellk].end();
+                    for(auto iterK = beginK; iterK != endK; ++iterK)
 					{
-						if(tempArc.is_equal(arcsPerCell[cellk][arcIndex]))
+                        if(iter->is_equal(*iterK))
 						{
-							if(arcsFlag[cellk][arcIndex] == false)
+                            if(arcsFlag[cellk][iterK - beginK] == false)
 							{
-								q.push(tempArc);
+                                q.push(*iter);
 							}
 							break;
 						}
 					}
+                    iter->swap_cells();
 				}
 			}
 		}

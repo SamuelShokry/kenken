@@ -1,5 +1,5 @@
-//#define GUI
-#define CONSOLE
+#define GUI
+//#define CONSOLE
 //#define TEST_CORRECTNESS
 
 #ifdef GUI
@@ -25,6 +25,7 @@
 int main(int argc, char *argv[])
 {
 #ifdef GUI
+    srand (0);
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
